@@ -1,2 +1,5 @@
 .artwork
 .DS_Store
+.python-version
+*.pyc
+.env
