@@ -34,10 +34,10 @@ dbsh: database
 check:
     python manage.py check
 
-upload-repo: clean-repo
+upload:
     rsync -avz --delete repository/ pypas.es:~/code/pypas-web/repository/
 
-clean-repo:
+clean:
     #!/usr/bin/env bash
     find repository/ -name '*.pyc' -exec rm -f {} \;
     find repository/ -name '*.aux' -exec rm -f {} \;
@@ -60,6 +60,18 @@ deploy:
     python manage.py migrate
     python manage.py collectstatic --no-input
     supervisorctl restart pypas-web
+
+build exercise:
+    #!/usr/bin/env bash
+    cd repository/{{ exercise }}/docs
+    pdflatex -shell-escape README.tex
+
+build-all:
+    #!/usr/bin/env bash
+    for exercise in repository/*/
+    do
+        (cd $exercise/docs && pdflatex -shell-escape README.tex)
+    done
 
 # Grab version of installed Python package
 @req package:
