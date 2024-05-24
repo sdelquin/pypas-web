@@ -58,6 +58,7 @@ deploy:
     git pull
     pip install -r requirements.txt
     python manage.py migrate
+    python manage.py collectstatic --no-input
     supervisorctl restart pypas-web
 
 # Grab version of installed Python package
