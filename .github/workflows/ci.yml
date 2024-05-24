@@ -1,0 +1,20 @@
+name: CI
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+jobs:
+  deploy:
+    name: Deploy project
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Execute remote deploy commands
+        uses: appleboy/ssh-action@master
+        with:
+          host: pypas.es
+          username: ${{ secrets.PRODUCTION_SSH_USERNAME }}
+          key: ${{ secrets.PRODUCTION_SSH_KEY }}
+          script: cd ~/code/pypas-web && just deploy
