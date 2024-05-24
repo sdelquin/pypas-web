@@ -52,6 +52,14 @@ clean-repo:
     find repository/ -name '.pytest_cache' -prune -exec rm -rf {} \;
     find repository/ -name 'svg-inkscape' -prune -exec rm -rf {} \;
 
+deploy:
+    #!/usr/bin/env bash
+    source ~/.pyenv/versions/pypas-web/bin/activate
+    git pull
+    pip install -r requirements.txt
+    python manage.py migrate
+    supervisorctl restart pypas-web
+
 # Grab version of installed Python package
 @req package:
     pip freeze | grep -i {{ package }}
