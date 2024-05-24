@@ -34,6 +34,24 @@ dbsh: database
 check:
     python manage.py check
 
+upload-repo: clean-repo
+    rsync -avz --delete repository/ pypas.es:~/code/pypas-web/repository/
+
+clean-repo:
+    #!/usr/bin/env bash
+    find repository/ -name '*.pyc' -exec rm -f {} \;
+    find repository/ -name '*.aux' -exec rm -f {} \;
+    find repository/ -name '*.fdb_latexmk' -exec rm -f {} \;
+    find repository/ -name '*.fls' -exec rm -f {} \;
+    find repository/ -name '*.log' -exec rm -f {} \;
+    find repository/ -name '*.out' -exec rm -f {} \;
+    find repository/ -name '*.synctex.gz' -exec rm -f {} \;
+    find repository/ -name '*.DS_Store' -exec rm -f {} \;
+    find repository/ -name '_minted-*' -prune -exec rm -rf {} \;
+    find repository/ -name '__pycache__' -prune -exec rm -rf {} \;
+    find repository/ -name '.pytest_cache' -prune -exec rm -rf {} \;
+    find repository/ -name 'svg-inkscape' -prune -exec rm -rf {} \;
+
 # Grab version of installed Python package
 @req package:
     pip freeze | grep -i {{ package }}
