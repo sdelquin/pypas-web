@@ -131,3 +131,5 @@ STATIC_ROOT = config('STATIC_ROOT', default=BASE_DIR / 'static')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REPOSITORY_PATH = config('REPOSITORY_PATH', default=BASE_DIR / 'repository', cast=Path)
+
+EXERCISE_CONFIG_FILE = config('EXERCISE_CONFIG_FILE', default='.config.toml')

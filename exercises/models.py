@@ -4,6 +4,7 @@ import zipfile
 from pathlib import Path
 from typing import Iterator
 
+import tomllib
 from django.conf import settings
 from django.db import models
 
@@ -17,10 +18,16 @@ class Exercise(models.Model):
         return settings.REPOSITORY_PATH / self.slug
 
     @property
+    def config(self) -> dict:
+        if not getattr(self, '_cfg', None) or not self._cfg:  # type: ignore
+            with open(self.path / settings.EXERCISE_CONFIG_FILE, 'rb') as f:
+                self._cfg = tomllib.load(f)
+        return self._cfg
+
+    @property
     def bundle(self) -> Iterator[str]:
-        f = open(self.path / '.bundle')
-        for line in f:
-            globs = glob.glob(line.strip(), root_dir=self.path)
+        for b in self.config['bundle'] + [settings.EXERCISE_CONFIG_FILE]:
+            globs = glob.glob(b, root_dir=self.path)
             for g in globs:
                 yield g
 
