@@ -42,7 +42,7 @@ class Exercise(models.Model):
         buffer = io.BytesIO()
         with zipfile.ZipFile(buffer, 'w') as archive:
             for f in self.bundle:
-                archive.write(self.build_full_path(f), f'{self.slug}/{f}')
+                archive.write(self.build_full_path(f), f)
         buffer.seek(0)
         return buffer
 
