@@ -1,3 +1,9 @@
-from django.shortcuts import render
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
 
-# Create your views here.
+from .models import User
+
+
+def authenticate_user(request, token: str):
+    user = get_object_or_404(User, token=token)
+    return JsonResponse(dict(name=user.name))
