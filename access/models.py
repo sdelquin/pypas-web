@@ -1,10 +1,7 @@
 import uuid
-from pathlib import Path
 
 from django.conf import settings
 from django.db import models
-
-from exercises.models import Exercise
 
 
 class User(models.Model):
@@ -17,10 +14,11 @@ class User(models.Model):
         unique_together = ('name', 'context')
 
     def __str__(self):
-        return self.name
+        return f'{self.name} ({self.context})'
 
-    def get_exercise_folder(self, exercise: Exercise) -> Path:
-        return self.context.folder / f'{exercise.slug}/{self.slug}/'
+    @property
+    def alias(self):
+        return f'{self.slug}@{self.context.slug}'
 
 
 class Context(models.Model):

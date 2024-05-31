@@ -5,4 +5,8 @@ from .models import Assignment
 
 @admin.register(Assignment)
 class AssignmentAdmin(admin.ModelAdmin):
-    list_display = ['user', 'exercise', 'passed', 'created_at', 'updated_at']
+    list_display = ['user_alias', 'exercise', 'passed', 'created_at', 'updated_at']
+
+    @admin.display(description='User')
+    def user_alias(self, obj):
+        return obj.user.alias
