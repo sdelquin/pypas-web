@@ -17,8 +17,16 @@ class User(models.Model):
         return f'{self.name} ({self.context})'
 
     @property
-    def alias(self):
+    def alias(self) -> str:
         return f'{self.slug}@{self.context.slug}'
+
+    @property
+    def num_uploaded_exercises(self) -> int:
+        return self.assignments.all().count()
+
+    @property
+    def num_passed_exercises(self) -> int:
+        return self.assignments.filter(passed=True).count()
 
 
 class Context(models.Model):

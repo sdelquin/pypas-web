@@ -18,6 +18,9 @@ class Assignment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        unique_together = ('user', 'exercise')
+
     @property
     def folder(self) -> Path:
         return self.user.context.folder / f'{self.exercise.slug}/{self.user.slug}/'
