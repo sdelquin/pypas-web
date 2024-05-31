@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django_browser_reload',
     'exercises.apps.ExercisesConfig',
     'access.apps.AccessConfig',
+    'assignments.apps.AssignmentsConfig',
 ]
 
 MIDDLEWARE = [
@@ -135,3 +136,5 @@ REPOSITORY_PATH = config('REPOSITORY_PATH', default=BASE_DIR / 'repository', cas
 
 EXERCISE_CONFIG_FILE = config('EXERCISE_CONFIG_FILE', default='.pypas.toml')
 EXERCISE_UPLOAD_PATH = config('EXERCISE_UPLOAD_PATH', default=BASE_DIR / 'uploads', cast=Path)
+
+PYTEST_CMD = config('PYTEST_CMD', default='pytest -q --show-capture=no --disable-warnings --tb=no')

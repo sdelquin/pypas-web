@@ -1,11 +1,9 @@
-import shutil
-import zipfile
-
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
 from access.models import User
+from assignments.models import Assignment
 
 from .models import Exercise
 
@@ -35,14 +33,9 @@ def put_exercise(request, slug: str):
         return JsonResponse(
             dict(success=False, payload=f'Not authenticated: Token "{token}" is not valid')
         )
+    assignment, created = Assignment.objects.get_or_create(exercise=exercise, user=user)
+    assignment.put(request.FILES.get('file'))
+    assignment.passed = assignment.test()
+    assignment.save()
 
-    upload_folder = user.get_exercise_folder(exercise)
-    shutil.rmtree(upload_folder, ignore_errors=True)
-    upload_folder.parent.mkdir(parents=True, exist_ok=True)
-    file = request.FILES.get('file')
-    with zipfile.ZipFile(file) as zip_ref:
-        zip_ref.extractall(upload_folder)
-
-    return JsonResponse(
-        dict(success=True, payload=f'Good job {user}! Exercise has been successfully uploaded')
-    )
+    return JsonResponse(dict(success=True, payload=assignment.passed))
