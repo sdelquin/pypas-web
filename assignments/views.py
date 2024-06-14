@@ -10,7 +10,7 @@ from .models import Assignment
 
 @csrf_exempt
 @require_POST
-def upload(request, exercise_slug: str):
+def put(request, exercise_slug: str):
     try:
         exercise = Exercise.objects.get(slug=exercise_slug)
     except Exercise.DoesNotExist:
