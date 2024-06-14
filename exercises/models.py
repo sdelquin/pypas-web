@@ -48,3 +48,7 @@ class Exercise(models.Model):
 
     def __str__(self):
         return self.slug
+
+    @classmethod
+    def get_num_exercises(cls):
+        return cls.objects.count()

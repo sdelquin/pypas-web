@@ -44,9 +44,4 @@ def stats(request):
             dict(success=False, payload=f'Not authenticated: Token "{token}" is not valid')
         )
 
-    return JsonResponse(
-        dict(
-            success=True,
-            payload=dict(passed=user.num_passed_exercises, uploaded=user.num_uploaded_exercises),
-        )
-    )
+    return JsonResponse(dict(success=True, payload=Assignment.stats(user)))
