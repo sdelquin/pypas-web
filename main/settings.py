@@ -113,7 +113,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = config('TIME_ZONE', default='Atlantic/Canary')
 
 USE_I18N = True
 
@@ -135,6 +135,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 REPOSITORY_PATH = config('REPOSITORY_PATH', default=BASE_DIR / 'repository', cast=Path)
 
 EXERCISE_CONFIG_FILE = config('EXERCISE_CONFIG_FILE', default='.pypas.toml')
-EXERCISE_UPLOAD_PATH = config('EXERCISE_UPLOAD_PATH', default=BASE_DIR / 'uploads', cast=Path)
+ASSIGNMENT_UPLOADS_PATH = config('ASSIGNMENT_UPLOADS_PATH', default=BASE_DIR / 'uploads', cast=Path)
 
 PYTEST_CMD = config('PYTEST_CMD', default='pytest -q --show-capture=no --disable-warnings --tb=no')

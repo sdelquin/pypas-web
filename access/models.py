@@ -1,6 +1,5 @@
 import uuid
 
-from django.conf import settings
 from django.db import models
 
 
@@ -32,10 +31,6 @@ class User(models.Model):
 class Context(models.Model):
     name = models.CharField(max_length=256)
     slug = models.SlugField(max_length=256, unique=True)
-
-    @property
-    def folder(self):
-        return settings.EXERCISE_UPLOAD_PATH / self.slug
 
     def __str__(self):
         return self.name

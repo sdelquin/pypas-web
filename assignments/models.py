@@ -35,9 +35,15 @@ class Assignment(models.Model):
 
     @property
     def folder(self) -> Path:
-        return self.user.context.folder / f'{self.exercise.slug}/{self.user.slug}/'
+        return (
+            settings.ASSIGNMENT_UPLOADS_PATH
+            / self.frame.context.slug
+            / self.frame.bucket.slug
+            / self.exercise.slug
+            / self.user.slug
+        )
 
-    def put(self, file: Path) -> None:
+    def unzip(self, file: Path) -> None:
         shutil.rmtree(self.folder, ignore_errors=True)
         self.folder.parent.mkdir(parents=True, exist_ok=True)
         with zipfile.ZipFile(file) as zip_ref:
@@ -69,12 +75,9 @@ class Frame(models.Model):
         return f'{self.context} ({self.bucket})'
 
     @classmethod
-    def get_active_frame(cls, context: Context) -> Frame | None:
+    def get_active_frame(cls, context: Context) -> Frame:
         today = datetime.date.today()
-        try:
-            return cls.objects.get(start__lte=today, end__gte=today, context=context)
-        except Frame.DoesNotExist:
-            return None
+        return cls.objects.get(start__lte=today, end__gte=today, context=context)
 
 
 class Bucket(models.Model):
