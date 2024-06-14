@@ -25,6 +25,7 @@ def upload(request, exercise_slug: str):
             dict(success=False, payload=f'Not authenticated: Token "{token}" is not valid')
         )
     assignment, created = Assignment.objects.get_or_create(exercise=exercise, user=user)
+    assignment.remove_folder()
     assignment.unzip(request.FILES.get('file'))
     assignment.passed = assignment.test()
     assignment.save()

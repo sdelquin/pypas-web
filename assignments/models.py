@@ -43,8 +43,10 @@ class Assignment(models.Model):
             / self.user.slug
         )
 
-    def unzip(self, file: Path) -> None:
+    def remove_folder(self):
         shutil.rmtree(self.folder, ignore_errors=True)
+
+    def unzip(self, file: Path) -> None:
         self.folder.parent.mkdir(parents=True, exist_ok=True)
         with zipfile.ZipFile(file) as zip_ref:
             zip_ref.extractall(self.folder)
