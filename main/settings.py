@@ -137,4 +137,7 @@ REPOSITORY_PATH = config('REPOSITORY_PATH', default=BASE_DIR / 'repository', cas
 EXERCISE_CONFIG_FILE = config('EXERCISE_CONFIG_FILE', default='.pypas.toml')
 ASSIGNMENT_UPLOADS_PATH = config('ASSIGNMENT_UPLOADS_PATH', default=BASE_DIR / 'uploads', cast=Path)
 
-PYTEST_CMD = config('PYTEST_CMD', default='pytest -q --show-capture=no --disable-warnings --tb=no')
+PYTEST_CMD = config(
+    'PYTEST_CMD',
+    default='docker run --rm -it -v {assignment_path}:/home/pytest pytest -q --show-capture=no --disable-warnings --tb=no',
+)

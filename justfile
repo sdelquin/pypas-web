@@ -77,6 +77,9 @@ build-all:
 @req package:
     pip freeze | grep -i {{ package }}
 
+build-pytest:
+    docker build -t pytest .
+
 [private]
 check-venv:
     #!/usr/bin/env bash

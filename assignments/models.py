@@ -53,7 +53,8 @@ class Assignment(models.Model):
             zip_ref.extractall(self.folder)
 
     def test(self) -> bool:
-        ret = subprocess.run(shlex.split(settings.PYTEST_CMD), cwd=self.folder)
+        cmd = settings.PYTEST_CMD.format(assignment_path=self.folder)
+        ret = subprocess.run(shlex.split(cmd))
         return ret.returncode == pytest.ExitCode.OK
 
     def __str__(self):
