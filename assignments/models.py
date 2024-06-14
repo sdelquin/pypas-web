@@ -111,6 +111,9 @@ class Frame(models.Model):
             self.num_exercises = Exercise.get_num_exercises()
         super().save(*args, **kwargs)
 
+    class Meta:
+        ordering = ['context', 'start']
+
 
 class Bucket(models.Model):
     name = models.CharField(max_length=256)
