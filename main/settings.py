@@ -139,5 +139,5 @@ ASSIGNMENT_UPLOADS_PATH = config('ASSIGNMENT_UPLOADS_PATH', default=BASE_DIR / '
 
 PYTEST_CMD = config(
     'PYTEST_CMD',
-    default='docker run --rm -it -v {assignment_path}:/home/pytest pytest -q --show-capture=no --disable-warnings --tb=no',
+    default='docker run --rm -v {assignment_path}:/home/pytest pytest -q --show-capture=no --disable-warnings --tb=no',
 )
