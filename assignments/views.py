@@ -5,24 +5,20 @@ from django.views.decorators.http import require_POST
 from access.models import User
 from exercises.models import Exercise
 
+from .decorators import auth_required
 from .models import Assignment
 
 
+@auth_required
 @csrf_exempt
 @require_POST
 def put(request, exercise_slug: str):
+    user = User.objects.get(token=request.POST['token'])
     try:
         exercise = Exercise.objects.get(slug=exercise_slug)
     except Exercise.DoesNotExist:
         return JsonResponse(
             dict(success=False, payload=f'Exercise "{exercise_slug}" does not exist')
-        )
-    try:
-        token = request.POST.get('token')
-        user = User.objects.get(token=token)
-    except User.DoesNotExist:
-        return JsonResponse(
-            dict(success=False, payload=f'Not authenticated: Token "{token}" is not valid')
         )
     assignment, created = Assignment.objects.get_or_create(exercise=exercise, user=user)
     assignment.remove_folder()
@@ -33,15 +29,9 @@ def put(request, exercise_slug: str):
     return JsonResponse(dict(success=True, payload=assignment.passed))
 
 
+@auth_required
 @csrf_exempt
 @require_POST
 def stats(request):
-    try:
-        token = request.POST.get('token')
-        user = User.objects.get(token=token)
-    except User.DoesNotExist:
-        return JsonResponse(
-            dict(success=False, payload=f'Not authenticated: Token "{token}" is not valid')
-        )
-
+    user = User.objects.get(token=request.POST['token'])
     return JsonResponse(dict(success=True, payload=Assignment.stats(user)))
