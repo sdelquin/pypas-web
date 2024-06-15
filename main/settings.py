@@ -141,9 +141,11 @@ REPOSITORY_PATH = config('REPOSITORY_PATH', default=BASE_DIR / 'repository', cas
 EXERCISE_CONFIG_FILE = config('EXERCISE_CONFIG_FILE', default='.pypas.toml')
 ASSIGNMENT_UPLOADS_PATH = config('ASSIGNMENT_UPLOADS_PATH', default=BASE_DIR / 'uploads', cast=Path)
 
+PYTEST_UID = config('PYTEST_UID', default='1000')
+PYTEST_GID = config('PYTEST_GID', default='1000')
 PYTEST_CMD = config(
     'PYTEST_CMD',
-    default='docker run --rm -v {assignment_path}:/home/pytest pytest -q --show-capture=no --disable-warnings --tb=no',
+    default='docker run --rm -v {assignment_path}:/home/pytest --user {uid}:{gid} pytest -q --show-capture=no --disable-warnings --tb=no',
 )
 
 RQ_QUEUES = {
