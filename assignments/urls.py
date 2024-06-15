@@ -6,5 +6,6 @@ app_name = 'assignments'
 
 urlpatterns = [
     path('<slug:exercise_slug>/put/', views.put, name='put'),
-    path('stats/', views.stats, name='stats'),
+    path('log/', views.log, name='log'),
+    path('log/verbose/', views.log, dict(verbose=True), name='log-verbose'),
 ]

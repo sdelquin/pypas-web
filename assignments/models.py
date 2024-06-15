@@ -32,7 +32,8 @@ class Assignment(models.Model):
     )
 
     class Meta:
-        unique_together = ('user', 'exercise')
+        unique_together = ['user', 'exercise']
+        ordering = ['created_at']
 
     @property
     def folder(self) -> Path:
@@ -66,21 +67,22 @@ class Assignment(models.Model):
         super().save(*args, **kwargs)
 
     @classmethod
-    def stats(cls, user: User) -> list[dict]:
-        s = []
+    def log(cls, user: User, verbose: bool = False) -> list[dict]:
+        logdata = []
         for frame in Frame.get_frames(user.context):
             frame_assignments = cls.objects.filter(user=user, frame=frame)
-            s.append(
-                dict(
-                    name=frame.bucket.name,
-                    uploaded=frame_assignments.count(),
-                    passed=frame_assignments.filter(passed=True).count(),
-                    failed=frame_assignments.filter(passed=False).count(),
-                    waiting=frame_assignments.filter(passed__isnull=True).count(),
-                    total=frame.num_exercises,
-                )
+            info = dict(
+                name=frame.bucket.name,
+                uploaded=frame_assignments.count(),
+                passed=frame_assignments.filter(passed=True).count(),
+                failed=frame_assignments.filter(passed=False).count(),
+                waiting=frame_assignments.filter(passed__isnull=True).count(),
+                available=frame.num_exercises,
             )
-        return s
+            if verbose:
+                info['assignments'] = list(user.assignments.values('exercise__slug', 'passed'))
+            logdata.append(info)
+        return logdata
 
 
 class Frame(models.Model):

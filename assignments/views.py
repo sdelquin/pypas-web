@@ -31,6 +31,6 @@ def put(request, exercise_slug: str):
 @auth_required
 @csrf_exempt
 @require_POST
-def stats(request):
+def log(request, verbose: bool = False):
     user = User.objects.get(token=request.POST['token'])
-    return JsonResponse(dict(success=True, payload=Assignment.stats(user)))
+    return JsonResponse(dict(success=True, payload=Assignment.log(user, verbose)))
