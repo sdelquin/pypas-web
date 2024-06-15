@@ -60,6 +60,7 @@ deploy:
     python manage.py migrate
     python manage.py collectstatic --no-input
     supervisorctl restart pypas-web
+    supervisorctl restart pypas-rq
 
 build exercise:
     #!/usr/bin/env bash
