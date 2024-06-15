@@ -1,18 +1,18 @@
 from __future__ import annotations
 
 import datetime
-import shlex
 import shutil
-import subprocess
 import zipfile
 from pathlib import Path
 
-import pytest
+import django_rq
 from django.conf import settings
 from django.db import models
 
 from access.models import Context, User
 from exercises.models import Exercise
+
+from . import jobs
 
 
 class Assignment(models.Model):
@@ -20,7 +20,7 @@ class Assignment(models.Model):
     exercise = models.ForeignKey(
         'exercises.Exercise', on_delete=models.PROTECT, related_name='assignments'
     )
-    passed = models.BooleanField(default=False)
+    passed = models.BooleanField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     frame = models.ForeignKey(
@@ -52,10 +52,10 @@ class Assignment(models.Model):
         with zipfile.ZipFile(file) as zip_ref:
             zip_ref.extractall(self.folder)
 
-    def test(self) -> bool:
-        cmd = settings.PYTEST_CMD.format(assignment_path=self.folder)
-        ret = subprocess.run(shlex.split(cmd))
-        return ret.returncode == pytest.ExitCode.OK
+    def test(self) -> None:
+        self.passed = None
+        self.save()
+        django_rq.enqueue(jobs.test_assignment, self)
 
     def __str__(self):
         return f'{self.user} at {self.exercise}'
@@ -75,6 +75,8 @@ class Assignment(models.Model):
                     name=frame.bucket.name,
                     uploaded=frame_assignments.count(),
                     passed=frame_assignments.filter(passed=True).count(),
+                    failed=frame_assignments.filter(passed=False).count(),
+                    waiting=frame_assignments.filter(passed__isnull=True).count(),
                     total=frame.num_exercises,
                 )
             )

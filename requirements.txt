@@ -3,3 +3,4 @@ prettyconf==2.2.1
 psycopg2==2.9.9
 django-browser-reload==1.12.1
 pytest==8.2.1
+django-rq==2.10.2

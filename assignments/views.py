@@ -23,10 +23,9 @@ def put(request, exercise_slug: str):
     assignment, created = Assignment.objects.get_or_create(exercise=exercise, user=user)
     assignment.remove_folder()
     assignment.unzip(request.FILES.get('file'))
-    assignment.passed = assignment.test()
-    assignment.save()
+    assignment.test()
 
-    return JsonResponse(dict(success=True, payload=assignment.passed))
+    return JsonResponse(dict(success=True, payload='Exercise was successfully uploaded'))
 
 
 @auth_required

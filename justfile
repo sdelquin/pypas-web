@@ -80,6 +80,9 @@ build-all:
 build-pytest:
     docker build -t pytest .
 
+rq:
+    python manage.py rqworker
+
 [private]
 check-venv:
     #!/usr/bin/env bash

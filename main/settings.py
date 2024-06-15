@@ -32,6 +32,7 @@ ALLOWED_HOSTS = config('ALLOWED_HOSTS', default=[], cast=config.list)
 # Application definition
 
 INSTALLED_APPS = [
+    # DJANGO
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -39,6 +40,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_browser_reload',
+    # THIRD PARTY
+    'django_rq',
+    # CUSTOM
     'exercises.apps.ExercisesConfig',
     'access.apps.AccessConfig',
     'assignments.apps.AssignmentsConfig',
@@ -141,3 +145,11 @@ PYTEST_CMD = config(
     'PYTEST_CMD',
     default='docker run --rm -v {assignment_path}:/home/pytest pytest -q --show-capture=no --disable-warnings --tb=no',
 )
+
+RQ_QUEUES = {
+    'default': {
+        'HOST': config('REDIS_HOST', default='localhost'),
+        'PORT': config('REDIS_PORT', default=6379, cast=int),
+        'DB': config('REDIS_DB', default=0, cast=int),
+    }
+}
