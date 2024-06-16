@@ -77,7 +77,7 @@ class Assignment(models.Model):
                 passed=frame_assignments.filter(passed=True).count(),
                 failed=frame_assignments.filter(passed=False).count(),
                 waiting=frame_assignments.filter(passed__isnull=True).count(),
-                available=frame.num_exercises,
+                available=frame.num_available_exercises,
             )
             if verbose:
                 info['assignments'] = list(user.assignments.values('exercise__slug', 'passed'))
@@ -99,6 +99,10 @@ class Frame(models.Model):
     @property
     def num_exercises(self) -> int:
         return self.packs.count()
+
+    @property
+    def num_available_exercises(self) -> int:
+        return self.packs.filter(exercise__available=True).count()
 
     @classmethod
     def get_active_frame(cls, context: Context) -> Frame:
