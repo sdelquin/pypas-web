@@ -5,4 +5,4 @@ from .models import Exercise
 
 @admin.register(Exercise)
 class ExerciseAdmin(admin.ModelAdmin):
-    list_display = ['slug', 'available', 'path']
+    list_display = ['slug', 'available', 'folder']

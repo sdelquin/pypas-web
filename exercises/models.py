@@ -15,12 +15,12 @@ class Exercise(models.Model):
     available = models.BooleanField(default=True)
 
     @property
-    def path(self) -> Path:
+    def folder(self) -> Path:
         return settings.REPOSITORY_PATH / self.slug
 
     @property
     def config_path(self) -> Path:
-        return self.path / settings.EXERCISE_CONFIG_FILE
+        return self.folder / settings.EXERCISE_CONFIG_FILE
 
     @property
     def config(self) -> dict:
@@ -32,7 +32,7 @@ class Exercise(models.Model):
     @property
     def bundle(self) -> Iterator[str]:
         for b in self.config['bundle'] + [settings.EXERCISE_CONFIG_FILE]:
-            globs = glob.glob(b, root_dir=self.path)
+            globs = glob.glob(b, root_dir=self.folder)
             for g in globs:
                 yield g
 
@@ -41,7 +41,7 @@ class Exercise(models.Model):
         return f'{self.slug}.zip'
 
     def build_full_path(self, relative_path: str) -> Path:
-        return self.path / relative_path
+        return self.folder / relative_path
 
     def zip(self) -> io.BytesIO:
         buffer = io.BytesIO()
@@ -55,8 +55,8 @@ class Exercise(models.Model):
         return self.slug
 
     def save(self, *args, **kwargs):
-        if not self.path.exists():
-            shutil.copytree(settings.EXERCISE_TEMPLATE_FOLDER, self.path)
+        if not self.folder.exists():
+            shutil.copytree(settings.EXERCISE_TEMPLATE_FOLDER, self.folder)
             self.config['slug'] = self.slug
             self.save_config()
         super().save(*args, **kwargs)
@@ -64,6 +64,9 @@ class Exercise(models.Model):
     def save_config(self):
         with open(self.config_path, 'w') as f:
             toml.dump(self.config, f)
+
+    def remove_folder(self):
+        shutil.rmtree(self.folder, ignore_errors=True)
 
     @classmethod
     def get_num_exercises(cls):
