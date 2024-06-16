@@ -13,6 +13,9 @@ from django.db import models
 class Exercise(models.Model):
     slug = models.SlugField(max_length=128, unique=True)
     available = models.BooleanField(default=True)
+    topic = models.ForeignKey(
+        'exercises.Topic', on_delete=models.PROTECT, related_name='exercises', blank=True, null=True
+    )
 
     @property
     def folder(self) -> Path:
@@ -71,3 +74,14 @@ class Exercise(models.Model):
     @classmethod
     def get_num_exercises(cls):
         return cls.objects.count()
+
+
+class Topic(models.Model):
+    primary = models.SlugField(max_length=128)
+    secondary = models.SlugField(max_length=128)
+
+    class Meta:
+        unique_together = ('primary', 'secondary')
+
+    def __str__(self):
+        return f'{self.primary}/{self.secondary}'
