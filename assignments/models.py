@@ -92,14 +92,13 @@ class Frame(models.Model):
     )
     start = models.DateField()
     end = models.DateField()
-    exercises = models.ManyToManyField('exercises.Exercise')
 
     def __str__(self):
         return f'{self.context} ({self.bucket})'
 
     @property
     def num_exercises(self) -> int:
-        return self.exercises.count()
+        return self.stock.count()
 
     @classmethod
     def get_active_frame(cls, context: Context) -> Frame:
@@ -125,3 +124,14 @@ class Bucket(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Stock(models.Model):
+    frame = models.ForeignKey('assignments.Frame', on_delete=models.PROTECT, related_name='stock')
+    exercise = models.ForeignKey(
+        'exercises.Exercise', on_delete=models.PROTECT, related_name='stock'
+    )
+    uploadable = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f'{self.frame} - {self.exercise}'

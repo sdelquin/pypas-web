@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Assignment, Bucket, Frame
+from .models import Assignment, Bucket, Frame, Stock
 
 
 @admin.register(Assignment)
@@ -15,10 +15,14 @@ class AssignmentAdmin(admin.ModelAdmin):
 @admin.register(Frame)
 class FrameAdmin(admin.ModelAdmin):
     list_display = ['context', 'bucket', 'start', 'end', 'num_exercises']
-    filter_horizontal = ('exercises',)
 
 
 @admin.register(Bucket)
 class BucketAdmin(admin.ModelAdmin):
     list_display = ['name', 'slug']
     prepopulated_fields = {'slug': ('name',)}
+
+
+@admin.register(Stock)
+class StockAdmin(admin.ModelAdmin):
+    list_display = ['frame', 'exercise', 'uploadable']
