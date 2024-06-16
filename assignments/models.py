@@ -92,14 +92,14 @@ class Frame(models.Model):
     )
     start = models.DateField()
     end = models.DateField()
-    num_exercises = models.PositiveSmallIntegerField(
-        blank=True,
-        null=True,
-        help_text='If blank, it will be populated with total number of exercises',
-    )
+    exercises = models.ManyToManyField('exercises.Exercise')
 
     def __str__(self):
         return f'{self.context} ({self.bucket})'
+
+    @property
+    def num_exercises(self) -> int:
+        return self.exercises.count()
 
     @classmethod
     def get_active_frame(cls, context: Context) -> Frame:
