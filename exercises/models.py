@@ -1,5 +1,8 @@
+from __future__ import annotations
+
 import glob
 import io
+import re
 import shutil
 import zipfile
 from pathlib import Path
@@ -9,6 +12,8 @@ import toml
 from django.conf import settings
 from django.db import models
 
+from .querysets import ExerciseQuerySet
+
 
 class Exercise(models.Model):
     slug = models.SlugField(max_length=128, unique=True)
@@ -16,6 +21,12 @@ class Exercise(models.Model):
     topic = models.ForeignKey(
         'exercises.Topic', on_delete=models.PROTECT, related_name='exercises', blank=True, null=True
     )
+
+    # MANAGERS
+    objects = ExerciseQuerySet.as_manager()
+
+    class Meta:
+        ordering = ['topic', 'slug']
 
     @property
     def folder(self) -> Path:
@@ -75,13 +86,30 @@ class Exercise(models.Model):
     def get_num_exercises(cls):
         return cls.objects.count()
 
+    @classmethod
+    def filter_by_topic(cls, topic: str):
+        topics = Topic.get_topics_by_str(topic)
+        return Exercise.objects.filter(topic__in=topics)
+
 
 class Topic(models.Model):
     primary = models.SlugField(max_length=128)
     secondary = models.SlugField(max_length=128)
+    order = models.PositiveSmallIntegerField(default=0)
 
     class Meta:
         unique_together = ('primary', 'secondary')
+        ordering = ('order',)
 
     def __str__(self):
         return f'{self.primary}/{self.secondary}'
+
+    @classmethod
+    def get_topics_by_str(cls, topic: str):
+        topics = re.split(r'[/:]', topic)
+        if len(topics) == 1:
+            primary = topics[0]
+            return cls.objects.filter(primary=primary)
+        else:
+            primary, secondary = topics
+            return cls.objects.filter(primary=primary, secondary=secondary)
