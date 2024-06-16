@@ -98,7 +98,7 @@ class Frame(models.Model):
 
     @property
     def num_exercises(self) -> int:
-        return self.stock.count()
+        return self.packs.count()
 
     @classmethod
     def get_active_frame(cls, context: Context) -> Frame:
@@ -126,12 +126,15 @@ class Bucket(models.Model):
         return self.name
 
 
-class Stock(models.Model):
-    frame = models.ForeignKey('assignments.Frame', on_delete=models.PROTECT, related_name='stock')
+class Pack(models.Model):
+    frame = models.ForeignKey('assignments.Frame', on_delete=models.PROTECT, related_name='packs')
     exercise = models.ForeignKey(
-        'exercises.Exercise', on_delete=models.PROTECT, related_name='stock'
+        'exercises.Exercise', on_delete=models.PROTECT, related_name='packs'
     )
     uploadable = models.BooleanField(default=True)
 
     def __str__(self):
         return f'{self.frame} - {self.exercise}'
+
+    class Meta:
+        unique_together = ('frame', 'exercise')

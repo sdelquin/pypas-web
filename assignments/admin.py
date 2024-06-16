@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Assignment, Bucket, Frame, Stock
+from .models import Assignment, Bucket, Frame, Pack
 
 
 @admin.register(Assignment)
@@ -23,6 +23,6 @@ class BucketAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('name',)}
 
 
-@admin.register(Stock)
-class StockAdmin(admin.ModelAdmin):
+@admin.register(Pack)
+class PackAdmin(admin.ModelAdmin):
     list_display = ['frame', 'exercise', 'uploadable']
