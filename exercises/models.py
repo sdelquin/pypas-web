@@ -1,10 +1,11 @@
 import glob
 import io
+import shutil
 import zipfile
 from pathlib import Path
 from typing import Iterator
 
-import tomllib
+import toml
 from django.conf import settings
 from django.db import models
 
@@ -18,10 +19,14 @@ class Exercise(models.Model):
         return settings.REPOSITORY_PATH / self.slug
 
     @property
+    def config_path(self) -> Path:
+        return self.path / settings.EXERCISE_CONFIG_FILE
+
+    @property
     def config(self) -> dict:
         if not getattr(self, '_cfg', None) or not self._cfg:  # type: ignore
-            with open(self.path / settings.EXERCISE_CONFIG_FILE, 'rb') as f:
-                self._cfg = tomllib.load(f)
+            with open(self.config_path) as f:
+                self._cfg = toml.load(f)
         return self._cfg
 
     @property
@@ -48,6 +53,17 @@ class Exercise(models.Model):
 
     def __str__(self):
         return self.slug
+
+    def save(self, *args, **kwargs):
+        if not self.path.exists():
+            shutil.copytree(settings.EXERCISE_TEMPLATE_FOLDER, self.path)
+            self.config['slug'] = self.slug
+            self.save_config()
+        super().save(*args, **kwargs)
+
+    def save_config(self):
+        with open(self.config_path, 'w') as f:
+            toml.dump(self.config, f)
 
     @classmethod
     def get_num_exercises(cls):

@@ -139,6 +139,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 REPOSITORY_PATH = config('REPOSITORY_PATH', default=BASE_DIR / 'repository', cast=Path)
 
 EXERCISE_CONFIG_FILE = config('EXERCISE_CONFIG_FILE', default='.pypas.toml')
+EXERCISE_TEMPLATE_FOLDER = config(
+    'EXERCISE_TEMPLATE_FOLDER', default=BASE_DIR / 'exercises/.template', cast=Path
+)
 ASSIGNMENT_UPLOADS_PATH = config('ASSIGNMENT_UPLOADS_PATH', default=BASE_DIR / 'uploads', cast=Path)
 
 PYTEST_UID = config('PYTEST_UID', default='1000')
