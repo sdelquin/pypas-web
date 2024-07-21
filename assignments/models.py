@@ -45,8 +45,15 @@ class Assignment(models.Model):
             / self.user.slug
         )
 
-    def remove_folder(self):
+    def remove_folder(self) -> None:
         shutil.rmtree(self.folder, ignore_errors=True)
+        folder = self.folder.parent
+        while folder != settings.ASSIGNMENT_UPLOADS_PATH:
+            if not list(folder.glob('*')):  # folder is empty!
+                shutil.rmtree(folder, ignore_errors=True)
+                folder = folder.parent
+            else:
+                break
 
     def unzip(self, file: Path) -> None:
         self.folder.parent.mkdir(parents=True, exist_ok=True)
