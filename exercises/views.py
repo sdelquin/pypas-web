@@ -9,6 +9,9 @@ def get(request, slug: str):
     except Exercise.DoesNotExist:
         return JsonResponse(dict(success=False, payload=f'Exercise "{slug}" does not exist'))
 
+    if not exercise.available:
+        return JsonResponse(dict(success=False, payload=f'Exercise "{slug}" is not available'))
+
     response = HttpResponse(exercise.zip(), content_type='application/zip')
     response['Content-Disposition'] = f'attachment; filename={exercise.zipname}'
     return response
