@@ -77,7 +77,7 @@ class Assignment(models.Model):
     def log(cls, user: User, verbose: bool = False) -> list[dict]:
         logdata = []
         for frame in Frame.get_frames(user.context):
-            frame_assignments = cls.objects.filter(user=user, frame=frame)
+            frame_assignments = cls.objects.filter(user=user, frame=frame, exercise__available=True)
             info = dict(
                 name=frame.bucket.name,
                 uploaded=frame_assignments.count(),
@@ -87,7 +87,7 @@ class Assignment(models.Model):
                 available=frame.num_available_exercises,
             )
             if verbose:
-                info['assignments'] = list(user.assignments.values('exercise__slug', 'passed'))
+                info['assignments'] = list(frame_assignments.values('exercise__slug', 'passed'))
             logdata.append(info)
         return logdata
 
