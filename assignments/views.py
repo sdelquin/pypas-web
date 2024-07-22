@@ -6,7 +6,7 @@ from access.models import User
 from exercises.models import Exercise
 
 from .decorators import auth_required
-from .models import Assignment
+from .models import Assignment, Frame, Pack
 
 
 @auth_required
@@ -20,6 +20,25 @@ def put(request, exercise_slug: str):
         return JsonResponse(
             dict(success=False, payload=f'Exercise "{exercise_slug}" does not exist')
         )
+
+    try:
+        pack = Pack.objects.get(frame=Frame.get_active_frame(user.context), exercise=exercise)
+    except Pack.DoesNotExist:
+        return JsonResponse(
+            dict(
+                success=False,
+                payload=f'Exercise "{exercise_slug}" does not belong to the active frame',
+            )
+        )
+    else:
+        if not pack.uploadable:
+            return JsonResponse(
+                dict(
+                    success=False,
+                    payload=f'Exercise "{exercise_slug}" is not uploadable for the active frame',
+                )
+            )
+
     assignment, created = Assignment.objects.get_or_create(exercise=exercise, user=user)
     assignment.remove_folder()
     assignment.unzip(request.FILES.get('file'))
