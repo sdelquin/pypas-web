@@ -5,7 +5,7 @@ from .models import Exercise, Topic
 
 @admin.register(Exercise)
 class ExerciseAdmin(admin.ModelAdmin):
-    list_display = ['slug', 'available', 'folder', 'topic']
+    list_display = ['slug', 'folder', 'topic']
     search_fields = ['slug']
 
 

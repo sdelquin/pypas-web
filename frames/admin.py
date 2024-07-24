@@ -5,7 +5,7 @@ from .models import Bucket, Frame
 
 @admin.register(Frame)
 class FrameAdmin(admin.ModelAdmin):
-    list_display = ['context', 'bucket', 'start', 'end']
+    list_display = ['context', 'bucket', 'start', 'end', 'num_exercises']
     filter_horizontal = ('exercises',)
 
 

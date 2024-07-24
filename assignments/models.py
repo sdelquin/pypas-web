@@ -24,6 +24,11 @@ class Assignment(models.Model):
         unique_together = ['user', 'exercise']
         ordering = ['created_at']
 
+    # @property
+    # def frame(self):
+    #     frames1 = self.user.context.frames
+    #     frames2 = self.exercise.frames
+
     @property
     def folder(self) -> Path:
         return (

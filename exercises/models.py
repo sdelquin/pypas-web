@@ -17,7 +17,6 @@ from .querysets import ExerciseQuerySet
 
 class Exercise(models.Model):
     slug = models.SlugField(max_length=128, unique=True)
-    available = models.BooleanField(default=True)
     topic = models.ForeignKey(
         'exercises.Topic', on_delete=models.PROTECT, related_name='exercises', blank=True, null=True
     )
