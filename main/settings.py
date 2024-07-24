@@ -46,6 +46,8 @@ INSTALLED_APPS = [
     'exercises.apps.ExercisesConfig',
     'access.apps.AccessConfig',
     'assignments.apps.AssignmentsConfig',
+    'frames.apps.FramesConfig',
+    'chunks.apps.ChunksConfig',
 ]
 
 MIDDLEWARE = [
