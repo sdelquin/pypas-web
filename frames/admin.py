@@ -5,8 +5,11 @@ from .models import Bucket, Frame
 
 @admin.register(Frame)
 class FrameAdmin(admin.ModelAdmin):
-    list_display = ['context', 'bucket', 'start', 'end', 'num_exercises']
-    filter_horizontal = ('exercises',)
+    list_display = ['context', 'bucket', 'start', 'end', 'num_exercises', 'active']
+
+    @admin.display(boolean=True)
+    def active(self, obj) -> bool:
+        return obj.is_active
 
 
 @admin.register(Bucket)

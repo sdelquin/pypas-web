@@ -82,10 +82,6 @@ class Exercise(models.Model):
         shutil.rmtree(self.folder, ignore_errors=True)
 
     @classmethod
-    def get_num_exercises(cls):
-        return cls.objects.count()
-
-    @classmethod
     def filter_by_topic(cls, topic: str):
         topics = Topic.get_topics_by_str(topic)
         return Exercise.objects.filter(topic__in=topics)

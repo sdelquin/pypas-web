@@ -2,6 +2,10 @@ import uuid
 
 from django.db import models
 
+from chunks.models import Chunk
+from exercises.models import Exercise
+from frames.models import Frame
+
 
 class User(models.Model):
     name = models.CharField(max_length=256)
@@ -34,3 +38,15 @@ class Context(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_active_exercises(self):
+        return Exercise.objects.filter(
+            pk__in=Chunk.objects.filter(frame__in=self.frames.active()).values('exercise')
+        )
+
+    def get_frame(self, exercise: Exercise) -> Frame | None:
+        try:
+            chunk = Chunk.objects.filter(frame__in=self.frames.all()).get(exercise=exercise)
+            return chunk.frame
+        except Chunk.DoesNotExist:
+            return None
