@@ -10,4 +10,5 @@ def authenticate_user(request, token: str):
         return JsonResponse(
             dict(success=False, payload=f'Not authenticated: Token "{token}" is not valid')
         )
-    return JsonResponse(dict(success=True, payload=user.name))
+    payload = dict(username=user.name, context=user.context.name)
+    return JsonResponse(dict(success=True, payload=payload))
