@@ -14,6 +14,7 @@ from .models import Assignment
 @require_POST
 def put(request, exercise_slug: str):
     user = User.objects.get(token=request.POST['token'])
+
     try:
         exercise = Exercise.objects.get(slug=exercise_slug)
     except Exercise.DoesNotExist:
@@ -21,30 +22,27 @@ def put(request, exercise_slug: str):
             dict(success=False, payload=f'Exercise "{exercise_slug}" does not exist')
         )
 
-    # try:
-    #     pack = Pack.objects.get(frame=Frame.get_active_frame(user.context), exercise=exercise)
-    # except Pack.DoesNotExist:
-    #     return JsonResponse(
-    #         dict(
-    #             success=False,
-    #             payload=f'Exercise "{exercise_slug}" does not belong to the active frame',
-    #         )
-    #     )
-    # else:
-    #     if not pack.uploadable:
-    #         return JsonResponse(
-    #             dict(
-    #                 success=False,
-    #                 payload=f'Exercise "{exercise_slug}" is not uploadable for the active frame',
-    #             )
-    #         )
+    if chunk := user.context.get_chunk(exercise):
+        if not chunk.frame.is_active:
+            return JsonResponse(
+                dict(success=False, payload=f'Exercise "{exercise_slug}" is not active')
+            )
+    else:
+        return JsonResponse(
+            dict(success=False, payload=f'Exercise "{exercise_slug}" is not available')
+        )
+
+    if not chunk.puttable:
+        return JsonResponse(
+            dict(success=False, payload=f'Exercise "{exercise_slug}" is not puttable')
+        )
 
     assignment, created = Assignment.objects.get_or_create(exercise=exercise, user=user)
     assignment.remove_folder()
     assignment.unzip(request.FILES.get('file'))
     assignment.test()
 
-    return JsonResponse(dict(success=True, payload='Exercise was successfully uploaded'))
+    return JsonResponse(dict(success=True, payload=chunk.frame.bucket.name))
 
 
 @auth_required

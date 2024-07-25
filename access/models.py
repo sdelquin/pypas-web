@@ -4,7 +4,6 @@ from django.db import models
 
 from chunks.models import Chunk
 from exercises.models import Exercise
-from frames.models import Frame
 
 
 class User(models.Model):
@@ -44,9 +43,8 @@ class Context(models.Model):
             pk__in=Chunk.objects.filter(frame__in=self.frames.active()).values('exercise')
         )
 
-    def get_frame(self, exercise: Exercise) -> Frame | None:
+    def get_chunk(self, exercise: Exercise) -> Chunk | None:
         try:
-            chunk = Chunk.objects.filter(frame__in=self.frames.all()).get(exercise=exercise)
-            return chunk.frame
+            return Chunk.objects.filter(frame__in=self.frames.all()).get(exercise=exercise)
         except Chunk.DoesNotExist:
             return None

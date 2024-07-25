@@ -24,17 +24,16 @@ class Assignment(models.Model):
         unique_together = ['user', 'exercise']
         ordering = ['created_at']
 
-    # @property
-    # def frame(self):
-    #     frames1 = self.user.context.frames
-    #     frames2 = self.exercise.frames
+    @property
+    def frame(self):
+        return self.user.context.get_chunk(self.exercise).frame
 
     @property
     def folder(self) -> Path:
         return (
             settings.ASSIGNMENT_UPLOADS_PATH
             / self.frame.context.slug
-            # / self.frame.bucket.slug
+            / self.frame.bucket.slug
             / self.exercise.slug
             / self.user.slug
         )

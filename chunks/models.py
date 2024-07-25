@@ -6,7 +6,7 @@ class Chunk(models.Model):
     exercise = models.ForeignKey(
         'exercises.Exercise', on_delete=models.PROTECT, related_name='chunks'
     )
-    puttable = models.BooleanField(default=False)
+    puttable = models.BooleanField(default=True)
 
     def __str__(self):
         return f'{self.frame} - {self.exercise}'

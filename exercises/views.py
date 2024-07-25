@@ -22,8 +22,8 @@ def get(request, slug: str):
     except Exercise.DoesNotExist:
         return JsonResponse(dict(success=False, payload=f'Exercise "{slug}" does not exist'))
 
-    if frame := context.get_frame(exercise):
-        if not frame.is_active:
+    if chunk := context.get_chunk(exercise):
+        if not chunk.frame.is_active:
             return JsonResponse(dict(success=False, payload=f'Exercise "{slug}" is not active'))
     else:
         return JsonResponse(dict(success=False, payload=f'Exercise "{slug}" is not available'))
