@@ -3,6 +3,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
 from access.models import Context, User
+from exercises.models import Topic
 
 from .models import Exercise
 
@@ -33,7 +34,23 @@ def get(request, slug: str):
     return response
 
 
-def list(request, topic: str = None):
-    qs = Exercise.filter_by_topic(topic) if topic else Exercise.objects
-    payload = [dict(slug=exercise.slug, topic=str(exercise.topic)) for exercise in qs]
+@csrf_exempt
+@require_POST
+def list(request, topics: str):
+    try:
+        user = User.objects.get(token=request.POST.get('token'))
+    except User.DoesNotExist:
+        context = Context.objects.get(slug='public')
+    else:
+        context = user.context
+
+    qs = context.get_active_chunks()
+    if any(topics_str := topics.split(':')):
+        topics_qs = Topic.filter_by_levels(*topics_str)
+        qs = qs.filter(exercise__topic__in=topics_qs)
+    qs = qs.order_by('frame', 'exercise__topic', 'exercise')
+    payload = [
+        dict(frame=chunk.frame.name, exercise=chunk.exercise.slug, topic=str(chunk.exercise.topic))
+        for chunk in qs
+    ]
     return JsonResponse(dict(success=True, payload=payload), safe=False)

@@ -22,6 +22,10 @@ class Frame(models.Model):
         return f'{self.context} ({self.bucket})'
 
     @property
+    def name(self):
+        return self.bucket.name
+
+    @property
     def num_exercises(self) -> int:
         return self.chunks.count()
 

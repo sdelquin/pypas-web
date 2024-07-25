@@ -13,3 +13,4 @@ class Chunk(models.Model):
 
     class Meta:
         unique_together = ('frame', 'exercise')
+        ordering = ('frame', 'exercise')

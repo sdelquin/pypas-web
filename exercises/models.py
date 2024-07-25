@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import glob
 import io
-import re
 import shutil
 import zipfile
 from pathlib import Path
@@ -81,11 +80,6 @@ class Exercise(models.Model):
     def remove_folder(self):
         shutil.rmtree(self.folder, ignore_errors=True)
 
-    @classmethod
-    def filter_by_topic(cls, topic: str):
-        topics = Topic.get_topics_by_str(topic)
-        return Exercise.objects.filter(topic__in=topics)
-
 
 class Topic(models.Model):
     primary = models.SlugField(max_length=128)
@@ -100,11 +94,11 @@ class Topic(models.Model):
         return f'{self.primary}/{self.secondary}'
 
     @classmethod
-    def get_topics_by_str(cls, topic: str):
-        topics = re.split(r'[/:]', topic)
-        if len(topics) == 1:
-            primary = topics[0]
-            return cls.objects.filter(primary=primary)
-        else:
-            primary, secondary = topics
-            return cls.objects.filter(primary=primary, secondary=secondary)
+    def filter_by_levels(cls, primary_topic: str, secondary_topic: str):
+        if primary_topic and secondary_topic:
+            return cls.objects.filter(primary=primary_topic, secondary=secondary_topic)
+        if primary_topic and not secondary_topic:
+            return cls.objects.filter(primary=primary_topic)
+        if not primary_topic and secondary_topic:
+            return cls.objects.filter(secondary=secondary_topic)
+        return models.QuerySet()

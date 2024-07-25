@@ -38,10 +38,8 @@ class Context(models.Model):
     def __str__(self):
         return self.name
 
-    def get_active_exercises(self):
-        return Exercise.objects.filter(
-            pk__in=Chunk.objects.filter(frame__in=self.frames.active()).values('exercise')
-        )
+    def get_active_chunks(self):
+        return Chunk.objects.filter(frame__in=self.frames.active())
 
     def get_chunk(self, exercise: Exercise) -> Chunk | None:
         try:
