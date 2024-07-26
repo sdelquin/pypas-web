@@ -8,6 +8,9 @@ import django_rq
 from django.conf import settings
 from django.db import models
 
+from access.models import User
+from frames.models import Frame
+
 from . import jobs
 
 
@@ -61,25 +64,24 @@ class Assignment(models.Model):
     def __str__(self):
         return f'{self.user} at {self.exercise}'
 
-    # def save(self, *args, **kwargs):
-    #     if self.frame is None: # TODO
-    #         self.frame = Frame.get_active_frame(self.user.context)
-    #     super().save(*args, **kwargs)
-
-    # @classmethod
-    # def log(cls, user: User, verbose: bool = False) -> list[dict]:
-    #     logdata = []
-    #     for frame in Frame.get_frames(user.context):
-    #         frame_assignments = cls.objects.filter(user=user, frame=frame, exercise__available=True)
-    #         info = dict(
-    #             name=frame.bucket.name,
-    #             uploaded=frame_assignments.count(),
-    #             passed=frame_assignments.filter(passed=True).count(),
-    #             failed=frame_assignments.filter(passed=False).count(),
-    #             waiting=frame_assignments.filter(passed__isnull=True).count(),
-    #             available=frame.num_available_exercises, #TODO
-    #         )
-    #         if verbose:
-    #             info['assignments'] = list(frame_assignments.values('exercise__slug', 'passed'))
-    #         logdata.append(info)
-    #     return logdata
+    @classmethod
+    def log(cls, user: User, frame_ref: str, verbose: bool = False) -> list[dict]:
+        logdata = []
+        if frame_ref:
+            frames = Frame.objects.filter(context=user.context).byref(frame_ref).active()
+        else:
+            frames = user.context.frames.active()
+        for frame in frames:
+            frame_assignments = cls.objects.filter(user=user, exercise__in=frame.exercises)
+            info = dict(
+                name=frame.name,
+                uploaded=frame_assignments.count(),
+                passed=frame_assignments.filter(passed=True).count(),
+                failed=frame_assignments.filter(passed=False).count(),
+                waiting=frame_assignments.filter(passed__isnull=True).count(),
+                available=frame.exercises.count(),
+            )
+            if verbose:
+                info['assignments'] = list(frame_assignments.values('exercise__slug', 'passed'))
+            logdata.append(info)
+        return logdata
