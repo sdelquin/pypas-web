@@ -44,10 +44,13 @@ def list(request):
     else:
         context = user.context
 
+    frame = request.POST.get('frame')
     primary_topic = request.POST.get('primary_topic')
     secondary_topic = request.POST.get('secondary_topic')
 
     qs = context.get_active_chunks()
+    if frame:
+        qs = qs.filter(frame__bucket__slug=frame)
     if any([primary_topic, secondary_topic]):
         topics_qs = Topic.filter_by_levels(primary_topic, secondary_topic)
         qs = qs.filter(exercise__topic__in=topics_qs)
