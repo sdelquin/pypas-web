@@ -6,5 +6,5 @@ app_name = 'exercises'
 
 urlpatterns = [
     path('get/<slug:slug>/', views.get, name='get'),
-    path('list/<str:topics>/', views.list, name='list'),
+    path('list/', views.list, name='list'),
 ]

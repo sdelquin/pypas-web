@@ -36,7 +36,7 @@ def get(request, slug: str):
 
 @csrf_exempt
 @require_POST
-def list(request, topics: str):
+def list(request):
     try:
         user = User.objects.get(token=request.POST.get('token'))
     except User.DoesNotExist:
@@ -44,9 +44,12 @@ def list(request, topics: str):
     else:
         context = user.context
 
+    primary_topic = request.POST.get('primary_topic')
+    secondary_topic = request.POST.get('secondary_topic')
+
     qs = context.get_active_chunks()
-    if any(topics_str := topics.split(':')):
-        topics_qs = Topic.filter_by_levels(*topics_str)
+    if any([primary_topic, secondary_topic]):
+        topics_qs = Topic.filter_by_levels(primary_topic, secondary_topic)
         qs = qs.filter(exercise__topic__in=topics_qs)
     qs = qs.order_by('frame', 'exercise__topic', 'exercise')
     payload = [
