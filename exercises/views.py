@@ -3,7 +3,6 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
 from access.models import Context, User
-from exercises.models import Topic
 
 from .models import Exercise
 
@@ -48,15 +47,5 @@ def list(request):
     primary_topic = request.POST.get('primary_topic')
     secondary_topic = request.POST.get('secondary_topic')
 
-    qs = context.get_active_chunks()
-    if frame:
-        qs = qs.filter(frame__bucket__slug=frame)
-    if any([primary_topic, secondary_topic]):
-        topics_qs = Topic.filter_by_levels(primary_topic, secondary_topic)
-        qs = qs.filter(exercise__topic__in=topics_qs)
-    qs = qs.order_by('frame', 'exercise__topic', 'exercise')
-    payload = [
-        dict(frame=chunk.frame.name, exercise=chunk.exercise.slug, topic=str(chunk.exercise.topic))
-        for chunk in qs
-    ]
-    return JsonResponse(dict(success=True, payload=payload), safe=False)
+    payload = Exercise.list(context, frame, primary_topic, secondary_topic)
+    return JsonResponse(dict(success=True, payload=payload))

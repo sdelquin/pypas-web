@@ -11,6 +11,8 @@ import toml
 from django.conf import settings
 from django.db import models
 
+from frames.models import Frame
+
 from .querysets import ExerciseQuerySet
 
 
@@ -80,6 +82,21 @@ class Exercise(models.Model):
     def remove_folder(self):
         shutil.rmtree(self.folder, ignore_errors=True)
 
+    @classmethod
+    def list(cls, context, frame_ref: str, primary_topic: str, secondary_topic: str) -> list[dict]:
+        listdata = []
+        if frame_ref:
+            frames = Frame.objects.filter(context=context).byref(frame_ref).active()
+        else:
+            frames = context.frames.active()
+        topics = Topic.filter_by_levels(primary_topic, secondary_topic)
+        for frame in frames:
+            exercises = frame.exercises.filter(topic__in=topics)
+            exercises_data = [dict(slug=e.slug, topic=str(e.topic)) for e in exercises]
+            info = dict(name=frame.name, exercises=exercises_data)
+            listdata.append(info)
+        return listdata
+
 
 class Topic(models.Model):
     primary = models.SlugField(max_length=128)
@@ -101,4 +118,4 @@ class Topic(models.Model):
             return cls.objects.filter(primary=primary_topic)
         if not primary_topic and secondary_topic:
             return cls.objects.filter(secondary=secondary_topic)
-        return models.QuerySet()
+        return cls.objects.all()

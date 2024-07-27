@@ -3,7 +3,7 @@ from __future__ import annotations
 from django.db import models
 from django.utils import timezone
 
-from exercises.models import Exercise
+import exercises.models
 
 from .querysets import FrameQuerySet
 
@@ -46,7 +46,7 @@ class Frame(models.Model):
 
     @property
     def exercises(self):
-        return Exercise.objects.filter(pk__in=self.chunks.values('exercise'))
+        return exercises.models.Exercise.objects.filter(pk__in=self.chunks.values('exercise'))
 
 
 class Bucket(models.Model):
