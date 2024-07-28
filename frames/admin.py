@@ -6,6 +6,7 @@ from .models import Bucket, Frame
 @admin.register(Frame)
 class FrameAdmin(admin.ModelAdmin):
     list_display = ['context', 'bucket', 'start', 'end', 'num_exercises', 'active']
+    list_filter = ['context', 'bucket']
 
     @admin.display(boolean=True)
     def active(self, obj) -> bool:

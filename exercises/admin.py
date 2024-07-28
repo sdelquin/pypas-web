@@ -7,6 +7,7 @@ from .models import Exercise, Topic
 class ExerciseAdmin(admin.ModelAdmin):
     list_display = ['slug', 'folder', 'topic']
     search_fields = ['slug']
+    list_filter = ['topic']
 
 
 @admin.register(Topic)
