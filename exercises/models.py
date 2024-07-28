@@ -39,8 +39,7 @@ class Exercise(models.Model):
     @property
     def config(self) -> dict:
         if not getattr(self, '_cfg', None) or not self._cfg:  # type: ignore
-            with open(self.config_path) as f:
-                self._cfg = toml.load(f)
+            self._cfg = self.load_config()
         return self._cfg
 
     @property
@@ -69,13 +68,16 @@ class Exercise(models.Model):
         return self.slug
 
     def save(self, *args, **kwargs):
-        if not self.folder.exists():
-            shutil.copytree(settings.EXERCISE_TEMPLATE_FOLDER, self.folder)
-            self.config['slug'] = self.slug
-            self.save_config()
+        # pre-save signal implemented!
         super().save(*args, **kwargs)
+        self.config['slug'] = self.slug
+        self.dump_config()
 
-    def save_config(self):
+    def load_config(self) -> dict:
+        with open(self.config_path) as f:
+            return toml.load(f)
+
+    def dump_config(self) -> None:
         with open(self.config_path, 'w') as f:
             toml.dump(self.config, f)
 
