@@ -81,7 +81,7 @@ build-all:
 build-pytest:
     docker build -t pytest .
 
-rq:
+rq: redis
     python manage.py rqworker
 
 [private]
@@ -101,5 +101,17 @@ database:
             pgrep -x postgres &> /dev/null || sudo service postgresql start
         elif [[ $OSTYPE == "darwin"* ]]; then
             pgrep -x postgres &> /dev/null || (open /Applications/Postgres.app && sleep 2)
+        fi
+    fi
+
+# Start redis server
+[private]
+redis:
+    #!/usr/bin/env bash
+    if [[ $(grep -i redis $(find . -name settings.py)) ]]; then
+        if   [[ $OSTYPE == "linux-gnu"* ]]; then
+            pgrep -x redis &> /dev/null || sudo service redis start
+        elif [[ $OSTYPE == "darwin"* ]]; then
+            pgrep -x redis &> /dev/null || (open /Applications/Redis.app && sleep 2)
         fi
     fi
