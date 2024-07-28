@@ -20,7 +20,8 @@ def update_exercise_repository(sender, instance, **kwargs):
         old_instance = Exercise.objects.get(pk=instance.pk)
     except Exercise.DoesNotExist:
         # copy template
-        shutil.copytree(settings.EXERCISE_TEMPLATE_FOLDER, instance.folder)
+        if not instance.folder.exists():
+            shutil.copytree(settings.EXERCISE_TEMPLATE_FOLDER, instance.folder)
     else:
         if (p := old_instance.folder).exists():
             p.rename(p.parent / instance.slug)
