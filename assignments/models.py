@@ -5,6 +5,7 @@ import zipfile
 from pathlib import Path
 
 import django_rq
+import toml
 from django.conf import settings
 from django.db import models
 
@@ -51,6 +52,24 @@ class Assignment(models.Model):
     def folder(self) -> Path:
         return self.context_folder / self.bucket_folder / self.exercise_folder / self.user_folder
 
+    @property
+    def config_path(self) -> Path:
+        return self.folder / settings.EXERCISE_CONFIG_FILE
+
+    @property
+    def config(self) -> dict:
+        if not getattr(self, '_cfg', None) or not self._cfg:  # type: ignore
+            self._cfg = self.load_config()
+        return self._cfg
+
+    def load_config(self) -> dict:
+        with open(self.config_path) as f:
+            return toml.load(f)
+
+    def dump_config(self) -> None:
+        with open(self.config_path, 'w') as f:
+            toml.dump(self.config, f)
+
     def rename_context_folder(self, context) -> None:
         if self.frame.context == context:
             if (p := self.context_folder).exists():
@@ -64,6 +83,8 @@ class Assignment(models.Model):
     def rename_exercise_folder(self, exercise) -> None:
         if self.exercise == exercise:
             if (p := self.exercise_folder).exists():
+                self.config['slug'] = exercise.slug
+                self.dump_config()
                 p.rename(p.parent / exercise.slug)
 
     def rename_user_folder(self, user) -> None:
