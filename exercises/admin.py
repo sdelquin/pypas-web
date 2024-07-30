@@ -12,4 +12,4 @@ class ExerciseAdmin(admin.ModelAdmin):
 
 @admin.register(Topic)
 class TopicAdmin(admin.ModelAdmin):
-    list_display = ['primary', 'secondary']
+    list_display = ['primary', 'secondary', 'order']
