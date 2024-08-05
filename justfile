@@ -50,6 +50,7 @@ clean:
     find repository/ -name '_minted-*' -prune -exec rm -rf {} \;
     find repository/ -name '__pycache__' -prune -exec rm -rf {} \;
     find repository/ -name '.pytest_cache' -prune -exec rm -rf {} \;
+    find repository/ -name '.mypy_cache' -prune -exec rm -rf {} \;
     find repository/ -name 'svg-inkscape' -prune -exec rm -rf {} \;
 
 deploy:
