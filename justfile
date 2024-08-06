@@ -34,9 +34,6 @@ dbsh: database
 check:
     python manage.py check
 
-upload:
-    rsync -avz --delete repository/ pypas.es:~/code/pypas-web/repository/
-
 clean:
     #!/usr/bin/env bash
     find repository/ -name '*.pyc' -exec rm -f {} \;
@@ -52,6 +49,9 @@ clean:
     find repository/ -name '.pytest_cache' -prune -exec rm -rf {} \;
     find repository/ -name '.mypy_cache' -prune -exec rm -rf {} \;
     find repository/ -name 'svg-inkscape' -prune -exec rm -rf {} \;
+
+upload: clean
+    rsync -avz --delete repository/ pypas.es:~/code/pypas-web/repository/
 
 deploy:
     #!/usr/bin/env bash
