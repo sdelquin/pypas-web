@@ -1,17 +1,27 @@
+"""
+This module provides some utilities to support a proper running of pypas software.
+Please do not modify unless you know what you're doing.
+"""
+
 import inspect
+import typing
+
+import rich
 
 
-def launch(func):
+def launch(func: typing.Callable):
+    """Launch func looking its args within args.py file"""
     try:
         import args
     except ModuleNotFoundError:
-        print('You have to create "args.py" with the main function arguments!')
+        rich.print('[red]You have to create [b]args.py[/b] with the main function arguments!')
     else:
         user_args = args.__dict__
         kwargs = {}
         for param in inspect.signature(func).parameters.keys():
             if param not in user_args:
-                print(f'Parameter "{param}" must be defined in "args.py"')
+                rich.print(f'[red]Parameter [b]{param}[/b] must be defined in [b]args.py[/b]')
+                rich.print(f'[dim italic]{param} = value')
                 break
             kwargs[param] = user_args[param]
         else:
