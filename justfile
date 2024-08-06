@@ -85,6 +85,13 @@ build-pytest:
 rq: redis
     python manage.py rqworker
 
+expand-vendor:
+    #!/usr/bin/env bash
+    for exercise_dir in ./repository/*
+    do
+        cp exercises/.template/vendor.py $exercise_dir
+    done
+
 [private]
 check-venv:
     #!/usr/bin/env bash
