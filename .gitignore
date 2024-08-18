@@ -7,3 +7,4 @@
 /static
 /uploads
 .ignore
+/node_modules

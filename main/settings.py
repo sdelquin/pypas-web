@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'assignments.apps.AssignmentsConfig',
     'frames.apps.FramesConfig',
     'chunks.apps.ChunksConfig',
+    'homepage.apps.HomepageConfig',
 ]
 
 MIDDLEWARE = [
@@ -130,7 +131,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
-STATIC_ROOT = config('STATIC_ROOT', default=BASE_DIR / 'static')
+STATIC_ROOT = config('STATIC_ROOT', default=BASE_DIR / 'static', cast=Path)
+STATICFILES_DIRS = [BASE_DIR / 'node_modules']
 
 
 # Default primary key field type

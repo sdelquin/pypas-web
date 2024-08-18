@@ -1,0 +1,85 @@
+body {
+  padding-top: 1rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+header {
+  display: flex;
+  border-bottom: 1px solid #6baa93;
+  justify-content: center;
+
+  img.logo {
+    width: 200px;
+  }
+}
+
+a {
+  color: #137251;
+  font-weight: 500;
+}
+
+a:hover {
+  text-decoration: underline;
+  color: #08432f;
+}
+
+a.anchorjs-link:hover {
+  text-decoration: none;
+  color: #08432f;
+}
+
+.content pre {
+  padding: 0;
+}
+
+code.hljs {
+  background: #515151;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  i {
+    color: orangered;
+  }
+}
+
+#scrollToTopBtn {
+  background-color: #08432f;
+  position: fixed;
+  bottom: 20px;
+  right: 30px;
+  z-index: 99;
+  border: none;
+  border-radius: 50%;
+  color: white;
+  cursor: pointer;
+  font-size: 20px;
+  line-height: 45px;
+  width: 45px;
+  display: none;
+}
+
+footer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 4rem;
+  height: 200px;
+  background-color: rgb(183, 221, 180);
+}
+
+div.reminder {
+  background-color: #b7ddb4;
+  color: rgb(31, 83, 31);
+  display: inline-block;
+  padding: 0.5rem;
+  border-radius: 5pt;
+  font-size: 10pt;
+  font-weight: 500;
+}
