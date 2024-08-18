@@ -59,6 +59,7 @@ deploy:
     git pull
     pip install -r requirements.txt
     python manage.py migrate
+    npm install --no-audit --no-fund
     python manage.py collectstatic --no-input
     supervisorctl restart pypas-web
     supervisorctl restart pypas-rq
