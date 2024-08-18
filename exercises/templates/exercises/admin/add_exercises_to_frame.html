@@ -1,0 +1,12 @@
+{% extends "admin/base_site.html" %}
+
+{% block title %}Add exercises to frame {{ block.super }}{% endblock %}
+
+{% block content %}
+    <form method="post" novalidate>
+        {% csrf_token %}
+        {{ form }}
+        <br>
+        <input type="submit" value="Add exercises to selected frame"></input>
+    </form>
+{% endblock %}
