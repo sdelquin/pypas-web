@@ -8,3 +8,4 @@
 /uploads
 .ignore
 /node_modules
+/backup

@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'frames.apps.FramesConfig',
     'chunks.apps.ChunksConfig',
     'homepage.apps.HomepageConfig',
+    'shared.apps.SharedConfig',
 ]
 
 MIDDLEWARE = [
@@ -162,3 +163,6 @@ RQ_QUEUES = {
         'DB': config('REDIS_DB', default=0, cast=int),
     }
 }
+
+BACKUP_DIR = config('BACKUP_DIR', default=BASE_DIR / 'backup', cast=Path)
+NUM_BACKUPS_TO_KEEP = config('NUM_BACKUPS_TO_KEEP', default='30', cast=int)
