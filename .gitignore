@@ -9,3 +9,4 @@
 .ignore
 /node_modules
 /backup
+/logs

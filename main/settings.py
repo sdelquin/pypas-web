@@ -16,6 +16,7 @@ from prettyconf import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+PROJECT_NAME = BASE_DIR.stem
 
 
 # Quick-start development settings - unsuitable for production
@@ -166,3 +167,39 @@ RQ_QUEUES = {
 
 BACKUP_DIR = config('BACKUP_DIR', default=BASE_DIR / 'backup', cast=Path)
 NUM_BACKUPS_TO_KEEP = config('NUM_BACKUPS_TO_KEEP', default='30', cast=int)
+
+if not DEBUG:
+    LOG_DIR = config('LOGS_DIR', default=BASE_DIR / 'logs', cast=Path)
+    LOG_DIR.mkdir(parents=True, exist_ok=True)
+    LOG_FILENAME = config('LOG_FILENAME', default=f'{PROJECT_NAME}.log')
+    LOG_PATH = LOG_DIR / LOG_FILENAME
+    LOG_SIZE = config('LOG_SIZE', default=2, cast=int) * 1024 * 1024  # size in MB
+    LOG_ROTATE = config('LOG_ROTATE', default=3, cast=int)
+    LOG_LEVEL = config('LOG_LEVEL', default='ERROR')
+    LOGGING = {
+        'version': 1,
+        'disable_existing_loggers': False,
+        'handlers': {
+            'file': {
+                'formatter': 'verbose',
+                'class': 'logging.handlers.RotatingFileHandler',
+                'level': LOG_LEVEL,
+                'filename': LOG_PATH,
+                'maxBytes': LOG_SIZE,
+                'backupCount': LOG_ROTATE,
+            },
+        },
+        'formatters': {
+            'verbose': {
+                'format': '%(levelname)s %(asctime)s %(module)s %(message)s',
+                'datefmt': '%d/%m/%Y %H:%M:%S',
+            },
+        },
+        'loggers': {
+            'django': {
+                'handlers': ['file'],
+                'level': LOG_LEVEL,
+                'propagate': True,
+            },
+        },
+    }
