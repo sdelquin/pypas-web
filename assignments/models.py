@@ -125,7 +125,8 @@ class Assignment(models.Model):
         for frame in frames:
             user_frame_assignments = cls.objects.filter(user=user, chunk__in=frame.chunks.all())
             info = dict(
-                name=frame.name,
+                name=str(frame),
+                slug=frame.bucket.slug,
                 uploaded=user_frame_assignments.count(),
                 passed=user_frame_assignments.filter(passed=True).count(),
                 failed=user_frame_assignments.filter(passed=False).count(),

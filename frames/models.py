@@ -21,7 +21,7 @@ class Frame(models.Model):
         ordering = ['context', 'start', 'bucket']
 
     def __str__(self):
-        return f'{self.context} ({self.bucket})'
+        return f'{self.context} ❯ {self.bucket}'
 
     @property
     def name(self):

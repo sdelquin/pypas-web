@@ -97,7 +97,7 @@ class Exercise(models.Model):
             exercises_data = [
                 dict(slug=c.exercise.slug, topic=str(c.exercise.topic)) for c in frame_chunks
             ]
-            info = dict(name=frame.name, exercises=exercises_data)
+            info = dict(name=str(frame), slug=frame.bucket.slug, exercises=exercises_data)
             listdata.append(info)
         return listdata
 
