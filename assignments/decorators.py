@@ -12,9 +12,8 @@ def auth_required(func):
             token = request.POST.get('token')
             User.objects.get(token=token)
         except User.DoesNotExist:
-            return JsonResponse(
-                dict(success=False, payload=f'Not authenticated: Token "{token}" is not valid')
-            )
+            msg = 'Token "{token}" is not valid' if token else 'Token must be defined'
+            return JsonResponse(dict(success=False, payload=f'Authentication required: {msg}'))
         return func(request, *args, **kwargs)
 
     return wrapper
