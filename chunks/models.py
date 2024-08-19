@@ -24,7 +24,10 @@ class Chunk(models.Model):
     def validate_unique(self, exclude=None) -> None:
         super().validate_unique(exclude=exclude)
         if (
-            self.__class__.objects.filter(frame__context=self.frame.context, exercise=self.exercise)
+            getattr(self, 'frame', False)
+            and self.__class__.objects.filter(
+                frame__context=self.frame.context, exercise=self.exercise
+            )
             .exclude(pk=self.pk)
             .exists()
         ):
