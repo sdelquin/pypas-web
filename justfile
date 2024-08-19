@@ -76,6 +76,19 @@ build-all:
         (cd $exercise/docs && pdflatex -shell-escape README.tex)
     done
 
+sync: check-venv database
+    #!/usr/bin/env bash
+    ssh -T andor << EOF
+        cd ~/code/pypas-web
+        source ~/.pyenv/versions/pypas-web/bin/activate
+        python manage.py backup -b ~/tmp/pypas-web/
+    EOF
+    scp andor:~/tmp/pypas-web/`date +%Y-%m-%d`/db.sql /tmp/pypas.sql
+    ssh andor rm -rf ~/tmp/pypas-web/
+    psql pypas < /tmp/pypas.sql
+    rm /tmp/pypas.sql
+    python manage.py reset_admin
+
 # Grab version of installed Python package
 @req package:
     pip freeze | grep -i {{ package }}
