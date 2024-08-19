@@ -93,8 +93,10 @@ class Exercise(models.Model):
             frames = context.frames.active()
         topics = Topic.filter_by_levels(primary_topic, secondary_topic)
         for frame in frames:
-            exercises = frame.exercises.filter(topic__in=topics)
-            exercises_data = [dict(slug=e.slug, topic=str(e.topic)) for e in exercises]
+            frame_chunks = frame.chunks.filter(exercise__topic__in=topics)
+            exercises_data = [
+                dict(slug=c.exercise.slug, topic=str(c.exercise.topic)) for c in frame_chunks
+            ]
             info = dict(name=frame.name, exercises=exercises_data)
             listdata.append(info)
         return listdata
