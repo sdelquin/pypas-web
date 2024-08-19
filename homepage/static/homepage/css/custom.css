@@ -8,6 +8,8 @@ header {
   display: flex;
   border-bottom: 1px solid #6baa93;
   justify-content: center;
+  padding-top: 0.5rem;
+  padding-bottom: 1rem;
 
   img.logo {
     width: 200px;
