@@ -3,6 +3,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
 from access.models import User
+from chunks.models import Chunk
 from exercises.models import Exercise
 
 from .decorators import auth_required
@@ -22,14 +23,16 @@ def put(request, exercise_slug: str):
             dict(success=False, payload=f'Exercise "{exercise_slug}" does not exist')
         )
 
-    if chunk := user.context.get_chunk(exercise):
-        if not chunk.frame.is_active:
-            return JsonResponse(
-                dict(success=False, payload=f'Exercise "{exercise_slug}" is not active')
-            )
-    else:
+    try:
+        chunk = Chunk.objects.get(frame__context=user.context, exercise=exercise)
+    except Chunk.DoesNotExist:
         return JsonResponse(
             dict(success=False, payload=f'Exercise "{exercise_slug}" is not available')
+        )
+
+    if not chunk.frame.is_active:
+        return JsonResponse(
+            dict(success=False, payload=f'Exercise "{exercise_slug}" is not active')
         )
 
     if not chunk.puttable:
@@ -37,7 +40,7 @@ def put(request, exercise_slug: str):
             dict(success=False, payload=f'Exercise "{exercise_slug}" is not puttable')
         )
 
-    assignment, created = Assignment.objects.get_or_create(exercise=exercise, user=user)
+    assignment, created = Assignment.objects.get_or_create(chunk=chunk, user=user)
     assignment.remove_folder()
     assignment.unzip(request.FILES.get('file'))
     assignment.test()

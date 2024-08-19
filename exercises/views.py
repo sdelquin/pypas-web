@@ -26,11 +26,13 @@ def get(request, slug: str):
     except Exercise.DoesNotExist:
         return JsonResponse(dict(success=False, payload=f'Exercise "{slug}" does not exist'))
 
-    if chunk := context.get_chunk(exercise):
-        if not chunk.frame.is_active:
-            return JsonResponse(dict(success=False, payload=f'Exercise "{slug}" is not active'))
-    else:
+    try:
+        chunk = Chunk.objects.get(frame__context=context, exercise=exercise)
+    except Chunk.DoesNotExist:
         return JsonResponse(dict(success=False, payload=f'Exercise "{slug}" is not available'))
+
+    if not chunk.frame.is_active:
+        return JsonResponse(dict(success=False, payload=f'Exercise "{slug}" is not active'))
 
     response = HttpResponse(exercise.zip(), content_type='application/zip')
     response['Content-Disposition'] = f'attachment; filename={exercise.zipname}'

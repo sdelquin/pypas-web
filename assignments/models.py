@@ -17,32 +17,26 @@ from . import jobs
 
 class Assignment(models.Model):
     user = models.ForeignKey('access.User', on_delete=models.PROTECT, related_name='assignments')
-    exercise = models.ForeignKey(
-        'exercises.Exercise', on_delete=models.PROTECT, related_name='assignments'
-    )
+    chunk = models.ForeignKey('chunks.Chunk', on_delete=models.PROTECT, related_name='assignments')
     passed = models.BooleanField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        unique_together = ['user', 'exercise']
         ordering = ['created_at']
-
-    @property
-    def frame(self):
-        return self.user.context.get_chunk(self.exercise).frame
+        unique_together = ['user', 'chunk']
 
     @property
     def context_folder(self) -> Path:
-        return settings.ASSIGNMENT_UPLOADS_PATH / self.frame.context.slug
+        return settings.ASSIGNMENT_UPLOADS_PATH / self.user.context.slug
 
     @property
     def bucket_folder(self) -> Path:
-        return self.context_folder / self.frame.bucket.slug
+        return self.context_folder / self.chunk.frame.bucket.slug
 
     @property
     def exercise_folder(self) -> Path:
-        return self.bucket_folder / self.exercise.slug
+        return self.bucket_folder / self.chunk.exercise.slug
 
     @property
     def user_folder(self) -> Path:
@@ -70,27 +64,33 @@ class Assignment(models.Model):
         with open(self.config_path, 'w') as f:
             toml.dump(self.config, f)
 
-    def rename_context_folder(self, context) -> None:
-        if self.frame.context == context:
+    def rename_context_folder(self, new_context, *, force=False) -> None:
+        if self.chunk.frame.context == new_context or force:
             if (p := self.context_folder).exists():
-                p.rename(p.parent / context.slug)
+                p.rename(p.parent / new_context.slug)
 
-    def rename_bucket_folder(self, bucket) -> None:
-        if self.frame.bucket == bucket:
+    def rename_bucket_folder(self, new_bucket, *, force=False) -> None:
+        if self.chunk.frame.bucket == new_bucket or force:
             if (p := self.bucket_folder).exists():
-                p.rename(p.parent / bucket.slug)
+                p.rename(p.parent / new_bucket.slug)
 
-    def rename_exercise_folder(self, exercise) -> None:
-        if self.exercise == exercise:
+    def rename_exercise_folder(self, new_exercise, *, force=False) -> None:
+        if self.chunk.exercise == new_exercise or force:
             if (p := self.exercise_folder).exists():
-                self.config['slug'] = exercise.slug
+                self.config['slug'] = new_exercise.slug
                 self.dump_config()
-                p.rename(p.parent / exercise.slug)
+                p.rename(p.parent / new_exercise.slug)
 
-    def rename_user_folder(self, user) -> None:
-        if self.user == user:
+    def rename_user_folder(self, new_user, *, force=False) -> None:
+        if self.user == new_user or force:
             if (p := self.user_folder).exists():
-                p.rename(p.parent / user.slug)
+                p.rename(p.parent / new_user.slug)
+
+    def rename_chunk_folder(self, chunk) -> None:
+        if self.chunk == chunk:
+            self.rename_exercise_folder(chunk.exercise, force=True)
+            self.rename_bucket_folder(chunk.frame.bucket, force=True)
+            self.rename_context_folder(chunk.frame.context, force=True)
 
     def remove_folder(self) -> None:
         shutil.rmtree(self.folder, ignore_errors=True)
@@ -113,7 +113,7 @@ class Assignment(models.Model):
         django_rq.enqueue(jobs.test_assignment, self)
 
     def __str__(self):
-        return f'{self.user} at {self.exercise}'
+        return f'{self.user} at {self.chunk.exercise}'
 
     @classmethod
     def log(cls, user: User, frame_ref: str, verbose: bool = False) -> list[dict]:
@@ -123,7 +123,7 @@ class Assignment(models.Model):
         else:
             frames = user.context.frames.active()
         for frame in frames:
-            frame_assignments = cls.objects.filter(user=user, exercise__in=frame.exercises)
+            frame_assignments = cls.objects.filter(user=user, chunk__exercise__in=frame.exercises)
             info = dict(
                 name=frame.name,
                 uploaded=frame_assignments.count(),
@@ -133,6 +133,8 @@ class Assignment(models.Model):
                 available=frame.exercises.count(),
             )
             if verbose:
-                info['assignments'] = list(frame_assignments.values('exercise__slug', 'passed'))
+                info['assignments'] = list(
+                    frame_assignments.values('chunk__exercise__slug', 'passed')
+                )
             logdata.append(info)
         return logdata
