@@ -123,18 +123,27 @@ class Assignment(models.Model):
         else:
             frames = user.context.frames.active()
         for frame in frames:
-            frame_assignments = cls.objects.filter(user=user, chunk__exercise__in=frame.exercises)
+            user_frame_assignments = cls.objects.filter(
+                user=user, chunk__exercise__in=frame.exercises
+            )
+            frame_exercises = frame.exercises
             info = dict(
                 name=frame.name,
-                uploaded=frame_assignments.count(),
-                passed=frame_assignments.filter(passed=True).count(),
-                failed=frame_assignments.filter(passed=False).count(),
-                waiting=frame_assignments.filter(passed__isnull=True).count(),
-                available=frame.exercises.count(),
+                uploaded=user_frame_assignments.count(),
+                passed=user_frame_assignments.filter(passed=True).count(),
+                failed=user_frame_assignments.filter(passed=False).count(),
+                waiting=user_frame_assignments.filter(passed__isnull=True).count(),
+                available=frame_exercises.count(),
             )
             if verbose:
-                info['assignments'] = list(
-                    frame_assignments.values('chunk__exercise__slug', 'passed')
-                )
+                assignments = []
+                for exercise in frame_exercises:
+                    try:
+                        assignment = user_frame_assignments.get(chunk__exercise=exercise)
+                        passed = assignment.passed
+                    except cls.DoesNotExist:
+                        passed = None
+                    assignments.append(dict(slug=exercise.slug, passed=passed))
+                info['assignments'] = assignments
             logdata.append(info)
         return logdata
