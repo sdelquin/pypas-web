@@ -8,13 +8,14 @@ class Chunk(models.Model):
         'exercises.Exercise', on_delete=models.PROTECT, related_name='chunks'
     )
     puttable = models.BooleanField(default=True)
+    order = models.FloatField(default=0)
 
     def __str__(self):
         return f'{self.frame} - {self.exercise}'
 
     class Meta:
         unique_together = ('frame', 'exercise')
-        ordering = ('frame', 'exercise')
+        ordering = ('frame', 'order', 'exercise')
 
     @classmethod
     def get_frame(cls, context, exercise):

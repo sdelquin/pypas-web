@@ -18,7 +18,7 @@ class Frame(models.Model):
     objects = FrameQuerySet.as_manager()
 
     class Meta:
-        ordering = ['context', 'start']
+        ordering = ['context', 'start', 'bucket']
 
     def __str__(self):
         return f'{self.context} ({self.bucket})'
