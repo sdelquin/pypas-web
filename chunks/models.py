@@ -23,10 +23,9 @@ class Chunk(models.Model):
     def validate_unique(self, exclude=None) -> None:
         super().validate_unique(exclude=exclude)
         if (
-            self.__class__.objects.filter(
-                frame__context=self.frame.context, exercise=self.exercise
-            ).count()
-            > 1
+            self.__class__.objects.filter(frame__context=self.frame.context, exercise=self.exercise)
+            .exclude(pk=self.pk)
+            .exists()
         ):
             raise ValidationError(
                 message=f'Chunk with context "{self.frame.context}" and exercise "{self.exercise}" already exists.'
