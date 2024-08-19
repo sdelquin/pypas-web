@@ -7,8 +7,10 @@ from .models import Context, User
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ['name', 'slug', 'token', 'context']
+    list_display = ['name', 'context', 'slug', 'token']
     prepopulated_fields = {'slug': ('name',)}
+    search_fields = ['slug', 'token']
+    list_filter = ['context']
 
 
 @admin.register(Context)
