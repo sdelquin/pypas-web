@@ -16,3 +16,4 @@ class FrameAdmin(admin.ModelAdmin):
 @admin.register(Bucket)
 class BucketAdmin(admin.ModelAdmin):
     list_display = ['name', 'slug']
+    prepopulated_fields = {'slug': ('name',)}

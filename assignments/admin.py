@@ -14,7 +14,7 @@ class AssignmentAdmin(admin.ModelAdmin):
         'created_at',
         'updated_at',
     ]
-    list_filter = ['user__context']
+    list_filter = ['user__context', 'chunk__frame', 'passed', 'created_at']
     search_fields = ['chunk__exercise__slug', 'user__slug']
 
     @admin.display(description='User')

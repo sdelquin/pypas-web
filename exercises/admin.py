@@ -14,9 +14,9 @@ def add_exercises_to_frame(modeladmin, request, queryset):
 
 @admin.register(Exercise)
 class ExerciseAdmin(admin.ModelAdmin):
-    list_display = ['slug', 'folder', 'topic']
+    list_display = ['slug', 'topic']
     search_fields = ['slug']
-    list_filter = ['topic']
+    list_filter = ['topic__primary', 'topic__secondary']
     actions = [add_exercises_to_frame]
 
 
