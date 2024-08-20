@@ -111,6 +111,10 @@ class Topic(models.Model):
         unique_together = ('primary', 'secondary')
         ordering = ('order',)
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.cached_order = self.order
+
     def __str__(self):
         return f'{self.primary}/{self.secondary}'
 
@@ -123,3 +127,11 @@ class Topic(models.Model):
         if not primary_topic and secondary_topic:
             return cls.objects.filter(secondary=secondary_topic)
         return cls.objects.all()
+
+    @classmethod
+    def fix_order(cls) -> None:
+        order = 1
+        for topic in cls.objects.all():
+            topic.order = order
+            topic.save()
+            order += 1

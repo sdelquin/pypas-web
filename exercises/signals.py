@@ -34,19 +34,27 @@ def rename_assignment_exercise_folder(sender, instance, **kwargs):
 
 
 @receiver(post_save, sender=Topic)
-def fix_order(sender, instance, **kwargs):
-    post_save.disconnect(fix_order, sender=Topic)
+def fix_order_post_save(sender, instance, **kwargs):
+    if instance.order != instance.cached_order or instance.order == 0:
+        post_save.disconnect(fix_order_post_save, sender=Topic)
+        try:
+            if instance.order == 0:
+                instance.order = Topic.objects.last().order + 1
+                instance.save()
+            else:
+                Topic.fix_order()
+        except Exception as err:
+            raise err
+        finally:
+            post_save.connect(fix_order_post_save, sender=Topic)
+
+
+@receiver(post_delete, sender=Topic)
+def fix_order_post_delete(sender, instance, **kwargs):
+    post_save.disconnect(fix_order_post_save, sender=Topic)
     try:
-        if instance.order == 0:
-            instance.order = Topic.objects.count()
-            instance.save()
-        else:
-            order = 1
-            for chunk in Topic.objects.all():
-                chunk.order = order
-                chunk.save()
-                order += 1
+        Topic.fix_order()
     except Exception as err:
         raise err
     finally:
-        post_save.connect(fix_order, sender=Topic)
+        post_save.connect(fix_order_post_save, sender=Topic)

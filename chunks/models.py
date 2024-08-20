@@ -13,16 +13,16 @@ class Chunk(models.Model):
     order = models.FloatField(default=0)
     hits = models.PositiveBigIntegerField(default=0)
 
+    class Meta:
+        unique_together = ('frame', 'exercise')
+        ordering = ('frame', 'order', 'exercise')
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.cached_order = self.order
 
     def __str__(self):
         return f'{self.frame} - {self.exercise}'
-
-    class Meta:
-        unique_together = ('frame', 'exercise')
-        ordering = ('frame', 'order', 'exercise')
 
     def validate_unique(self, exclude=None) -> None:
         super().validate_unique(exclude=exclude)
