@@ -5,7 +5,7 @@ from .models import Chunk
 
 @admin.register(Chunk)
 class ChunkAdmin(admin.ModelAdmin):
-    list_display = ['frame', 'exercise', 'exercise_topic', 'puttable', 'int_order']
+    list_display = ['frame', 'exercise', 'exercise_topic', 'int_order', 'puttable', 'hits']
     autocomplete_fields = ['exercise']
     search_fields = ['exercise__slug']
     list_filter = ['frame__context', 'frame__bucket', 'exercise__topic', 'puttable']

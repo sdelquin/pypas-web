@@ -34,6 +34,9 @@ def get(request, slug: str):
     if not chunk.frame.is_active:
         return JsonResponse(dict(success=False, payload=f'Exercise "{slug}" is not active'))
 
+    chunk.hits += 1
+    chunk.save()
+
     response = HttpResponse(exercise.zip(), content_type='application/zip')
     response['Content-Disposition'] = f'attachment; filename={exercise.zipname}'
     return response
