@@ -89,6 +89,9 @@ sync: check-venv database
     rm /tmp/pypas.sql
     python manage.py reset_admin
 
+get exercise:
+    scp -r andor:~/code/pypas-web/repository/{{ exercise }} repository/
+
 # Grab version of installed Python package
 @req package:
     pip freeze | grep -i {{ package }}
