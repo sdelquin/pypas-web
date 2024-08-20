@@ -105,7 +105,7 @@ class Exercise(models.Model):
 class Topic(models.Model):
     primary = models.SlugField(max_length=128)
     secondary = models.SlugField(max_length=128)
-    order = models.PositiveSmallIntegerField(default=0)
+    order = models.FloatField(default=0)
 
     class Meta:
         unique_together = ('primary', 'secondary')

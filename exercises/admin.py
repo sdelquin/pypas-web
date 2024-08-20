@@ -22,4 +22,9 @@ class ExerciseAdmin(admin.ModelAdmin):
 
 @admin.register(Topic)
 class TopicAdmin(admin.ModelAdmin):
-    list_display = ['primary', 'secondary', 'order']
+    list_display = ['primary', 'secondary', 'int_order']
+
+    @admin.display(description='Order')
+    def int_order(self, obj) -> int:
+        iorder = int(obj.order)
+        return iorder if iorder == obj.order else obj.order
