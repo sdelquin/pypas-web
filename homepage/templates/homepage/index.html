@@ -6,7 +6,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pypas</title>
+  <title>pypas | Aprende Python comiendo pipas</title>
   <link rel="stylesheet" href="{% hashed_static 'bulma/css/versions/bulma-no-dark-mode.min.css' %}">
   <link rel="stylesheet" href="{% hashed_static '@fortawesome/fontawesome-free/css/all.min.css' %}">
   <link rel="stylesheet" href="{% hashed_static '@highlightjs/cdn-assets/styles/rainbow.min.css' %}">
@@ -26,6 +26,7 @@
     <a href="#obtener-un-ejercicio">Obtener un ejercicio</a><br>
     <a href="#leer-un-ejercicio">Leer un ejercicio</a><br>
     <a href="#probar-un-ejercicio">Probar un ejercicio</a><br>
+    <a href="#ejecutar-un-ejercicio">Ejecutar un ejercicio</a><br>
     <a href="#actualizar-un-ejercicio">Actualizar un ejercicio</a><br>
     <a href="#comprimir-un-ejercicio">Comprimir un ejercicio</a><br>
     <a href="#autenticarse-como-usuario">Autenticarse como usuario</a><br>
@@ -110,6 +111,27 @@
       <i class="fa-regular fa-bell"></i>
       Este comando requiere estar dentro de la carpeta del ejercicio.
     </div>
+
+    <h2>
+      <i class="fa-solid fa-microchip"></i>
+      Ejecutar un ejercicio
+    </h2>
+    <p>Eventualmente podrías querer <b>ejecutar tu código</b> en vez de lanzar las pruebas.</p>
+    <p>Para explicar cómo, vamos a partir de un ejercicio "ficticio" <code>simple_add.py</code>:</p>
+    <pre><code class="python">def add(x: int, y: int) -> int:
+      return x + y
+
+# DO NOT TOUCH THE CODE BELOW
+# ...</code></pre>
+    <p>Tendrás que crear un fichero <code>args.py</code> dentro de la carpeta del ejercicio con los valores que quieras dar a los <b>parámetros de la función principal</b>:</p>
+    <pre><code class="ini">x = 3
+y = 7</code></pre>
+    <p>Ahora podrás ejecutar tu programa con:</p>
+    <pre><code class="shell">$ python simple_add.py</code></pre>
+    <blockquote>
+      <i class="fa-regular fa-lightbulb"></i>
+      Puedes utilizar esta estrategia para depurar los errores o mejorar tu código.
+    </blockquote>
       
     <h2>
       <i class="fa-solid fa-spinner"></i>
