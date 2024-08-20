@@ -5,6 +5,7 @@ from django.db.models.signals import post_delete, post_save, pre_save
 from django.dispatch import receiver
 
 from assignments.models import Assignment
+from shared.utils import DisabledSignal
 
 from .models import Exercise, Topic
 
@@ -36,25 +37,15 @@ def rename_assignment_exercise_folder(sender, instance, **kwargs):
 @receiver(post_save, sender=Topic)
 def fix_order_post_save(sender, instance, **kwargs):
     if instance.order != instance.cached_order or instance.order == 0:
-        post_save.disconnect(fix_order_post_save, sender=Topic)
-        try:
+        with DisabledSignal(post_save, fix_order_post_save, Topic):
             if instance.order == 0:
                 instance.order = Topic.objects.last().order + 1
                 instance.save()
             else:
                 Topic.fix_order()
-        except Exception as err:
-            raise err
-        finally:
-            post_save.connect(fix_order_post_save, sender=Topic)
 
 
 @receiver(post_delete, sender=Topic)
 def fix_order_post_delete(sender, instance, **kwargs):
-    post_save.disconnect(fix_order_post_save, sender=Topic)
-    try:
+    with DisabledSignal(post_save, fix_order_post_save, Topic):
         Topic.fix_order()
-    except Exception as err:
-        raise err
-    finally:
-        post_save.connect(fix_order_post_save, sender=Topic)
