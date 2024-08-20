@@ -135,3 +135,10 @@ class Topic(models.Model):
             topic.order = order
             topic.save()
             order += 1
+
+    @classmethod
+    def last_order(cls) -> int:
+        try:
+            return cls.objects.last().order
+        except AttributeError:
+            return 0

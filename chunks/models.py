@@ -49,3 +49,10 @@ class Chunk(models.Model):
             chunk.order = order
             chunk.save()
             order += 1
+
+    @classmethod
+    def last_order(cls, within_frame: Frame) -> int:
+        try:
+            return cls.objects.filter(frame=within_frame).last().order
+        except AttributeError:
+            return 0

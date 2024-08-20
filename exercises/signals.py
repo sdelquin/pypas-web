@@ -39,7 +39,7 @@ def fix_order_post_save(sender, instance, **kwargs):
     if instance.order != instance.cached_order or instance.order == 0:
         with DisabledSignal(post_save, fix_order_post_save, Topic):
             if instance.order == 0:
-                instance.order = Topic.objects.last().order + 1
+                instance.order = Topic.last_order() + 1
                 instance.save()
             else:
                 Topic.fix_order()
