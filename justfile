@@ -55,7 +55,7 @@ upload: clean
 
 deploy:
     #!/usr/bin/env bash
-    source ~/.pyenv/versions/pypas-web/bin/activate
+    source .venv/bin/activate
     git pull
     pip install -r requirements.txt
     python manage.py migrate
@@ -80,7 +80,7 @@ sync: check-venv database
     #!/usr/bin/env bash
     ssh -T andor << EOF
         cd ~/code/pypas-web
-        source ~/.pyenv/versions/pypas-web/bin/activate
+        source .venv/bin/activate
         python manage.py backup -b ~/tmp/pypas-web/
     EOF
     scp andor:~/tmp/pypas-web/`date +%Y-%m-%d`/db.sql /tmp/pypas.sql
@@ -99,7 +99,7 @@ get exercise:
 build-pytest:
     docker build -t pytest .
 
-rq: redis
+rq: check-venv redis
     python manage.py rqworker
 
 expand-vendor:
@@ -112,7 +112,7 @@ expand-vendor:
 [private]
 check-venv:
     #!/usr/bin/env bash
-    if [ -z $VIRTUAL_ENV ] && [[ $(pyenv version-name) =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+    if [ -z $VIRTUAL_ENV ]; then
         echo You must activate a virtualenv!
         exit 1
     fi
