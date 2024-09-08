@@ -203,3 +203,5 @@ if not DEBUG:
             },
         },
     }
+
+PYPAS_CLI_PYPI_URL = config('PYPAS_CLI_PYPI_URL', default='https://pypi.org/project/pypas-cli/')
