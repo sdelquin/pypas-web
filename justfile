@@ -1,5 +1,4 @@
-alias mm := mmigrate
-
+# Launch Django development server
 runserver: check-venv database
     python manage.py runserver
 
@@ -8,6 +7,8 @@ makemigrations app="": check-venv database
 
 migrate app="": check-venv database
     python manage.py migrate {{ app }}
+
+alias mm := mmigrate
 
 mmigrate app="": check-venv database
     python manage.py makemigrations {{ app }} && python manage.py migrate {{ app }}
@@ -108,6 +109,10 @@ expand-vendor:
     do
         cp exercises/.template/vendor.py $exercise_dir
     done
+
+# Show documentation for exercise
+@doc exercise:
+    open repository/{{ exercise }}/docs/README.pdf
 
 [private]
 check-venv:
