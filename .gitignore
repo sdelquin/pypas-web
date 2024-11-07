@@ -3,6 +3,7 @@
 .DS_Store
 .python-version
 *.pyc
+*.log
 .env
 /repository
 /static
