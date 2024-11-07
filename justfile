@@ -63,7 +63,7 @@ clean:
 
 # Upload exercises to production
 upload:
-    rsync -avz --delete --exclude '.venv*' --exclude 'node_modules*' repository/ pypas.es:~/code/pypas-web/repository/
+    rsync -avz --delete --exclude '.venv*' repository/ pypas.es:~/code/pypas-web/repository/
 
 # Deploy project to production
 deploy:
@@ -72,7 +72,6 @@ deploy:
     git pull
     pip install -r requirements.txt
     python manage.py migrate
-    npm install --no-audit --no-fund
     python manage.py collectstatic --no-input
     supervisorctl restart pypas-web
     supervisorctl restart pypas-rq
