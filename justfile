@@ -132,6 +132,10 @@ expand-vendor:
 @doc exercise:
     open repository/{{ exercise }}/docs/README.pdf
 
+# Get mark for a certain user & frame
+@getmark context bucket user:
+    ./manage.py get_mark {{ context }} {{ bucket }} {{ user }}
+
 # Check if virtualenv is activated
 [private]
 check-venv:
