@@ -1,0 +1,15 @@
+.vscode
+.venv*
+*.pyc
+__pycache__
+.pytest_cache
+.mypy_cache
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.synctex.gz
+*.DS_Store
+_minted-*
+svg-inkscape

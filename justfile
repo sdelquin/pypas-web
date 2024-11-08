@@ -62,8 +62,8 @@ clean:
     find repository/ -name 'svg-inkscape' -prune -exec rm -rf {} \;
 
 # Upload exercises to production
-upload: clean
-    rsync -avz --delete --exclude '.venv*' repository/ pypas.es:~/code/pypas-web/repository/
+upload:
+    rsync -avz --delete --exclude-from rsync_exclude.txt repository/ pypas.es:~/code/pypas-web/repository/
 
 # Deploy project to production
 deploy:
