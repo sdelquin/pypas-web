@@ -53,5 +53,8 @@ class Bucket(models.Model):
     name = models.CharField(max_length=256)
     slug = models.SlugField(max_length=256, unique=True)
 
+    class Meta:
+        ordering = ['name']
+
     def __str__(self):
         return self.name
