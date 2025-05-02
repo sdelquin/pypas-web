@@ -1,5 +1,5 @@
 from django.contrib import messages
-from django.http import HttpResponse, JsonResponse
+from django.http import FileResponse, JsonResponse
 from django.shortcuts import redirect, render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
@@ -37,9 +37,8 @@ def get(request, slug: str):
     chunk.hits += 1
     chunk.save()
 
-    response = HttpResponse(exercise.zip(), content_type='application/zip')
-    response['Content-Disposition'] = f'attachment; filename={exercise.zipname}'
-    return response
+    exercise.zip()
+    return FileResponse(open(exercise.zippath, 'rb'), as_attachment=True, filename=exercise.zipname)
 
 
 @csrf_exempt

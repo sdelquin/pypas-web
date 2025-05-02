@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import glob
-import io
 import shutil
 import zipfile
 from pathlib import Path
@@ -53,16 +52,26 @@ class Exercise(models.Model):
     def zipname(self) -> str:
         return f'{self.slug}.zip'
 
+    @property
+    def zippath(self) -> Path:
+        return self.folder / self.zipname
+
+    @property
+    def folder_last_modification(self) -> float:
+        return self.folder.stat().st_mtime
+
+    @property
+    def zip_last_modification(self) -> float:
+        return self.zippath.stat().st_mtime
+
     def build_full_path(self, relative_path: str) -> Path:
         return self.folder / relative_path
 
-    def zip(self) -> io.BytesIO:
-        buffer = io.BytesIO()
-        with zipfile.ZipFile(buffer, 'w') as archive:
-            for f in self.bundle:
-                archive.write(self.build_full_path(f), f)
-        buffer.seek(0)
-        return buffer
+    def zip(self) -> None:
+        if not self.zippath.exists() or self.folder_last_modification > self.zip_last_modification:
+            with zipfile.ZipFile(self.zippath, 'w') as archive:
+                for f in self.bundle:
+                    archive.write(self.build_full_path(f), f)
 
     def __str__(self):
         return self.slug
