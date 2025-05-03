@@ -44,11 +44,10 @@ class Chunk(models.Model):
 
     @classmethod
     def fix_order(cls, within_frame: Frame) -> None:
-        order = 1
-        for chunk in cls.objects.filter(frame=within_frame):
-            chunk.order = order
-            chunk.save()
-            order += 1
+        chunks = list(cls.objects.filter(frame=within_frame))
+        for i, chunk in enumerate(chunks, start=1):
+            chunk.order = i
+        cls.objects.bulk_update(chunks, ['order'])
 
     @classmethod
     def last_order(cls, within_frame: Frame) -> int:
