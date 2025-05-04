@@ -1,3 +1,4 @@
+from adminsortable2.admin import SortableAdminMixin
 from django.contrib import admin
 from django.http import HttpResponseRedirect
 from django.urls import reverse
@@ -13,17 +14,12 @@ def add_chunks_to_frame(modeladmin, request, queryset):
 
 
 @admin.register(Chunk)
-class ChunkAdmin(admin.ModelAdmin):
-    list_display = ['exercise', 'frame', 'exercise_topic', 'int_order', 'puttable', 'hits']
+class ChunkAdmin(SortableAdminMixin, admin.ModelAdmin):
+    list_display = ['exercise', 'frame', 'exercise_topic', 'puttable', 'hits', 'order']
     autocomplete_fields = ['exercise']
     search_fields = ['exercise__slug']
     list_filter = ['frame', 'exercise__topic', 'puttable']
     actions = [add_chunks_to_frame]
-
-    @admin.display(description='Order')
-    def int_order(self, obj) -> int:
-        iorder = int(obj.order)
-        return iorder if iorder == obj.order else obj.order
 
     @admin.display(description='Topic')
     def exercise_topic(self, obj) -> str:

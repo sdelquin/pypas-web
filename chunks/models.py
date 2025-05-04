@@ -10,16 +10,12 @@ class Chunk(models.Model):
         'exercises.Exercise', on_delete=models.PROTECT, related_name='chunks'
     )
     puttable = models.BooleanField(default=True)
-    order = models.FloatField(default=0)
+    order = models.PositiveIntegerField(default=0)
     hits = models.PositiveBigIntegerField(default=0)
 
     class Meta:
         unique_together = ('frame', 'exercise')
-        ordering = ('frame', 'order', 'exercise')
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.cached_order = self.order
+        ordering = ('order',)
 
     def __str__(self):
         return f'{self.frame} - {self.exercise}'
@@ -43,15 +39,8 @@ class Chunk(models.Model):
         return cls.objects.get(frame__context=context, exercise=exercise)
 
     @classmethod
-    def fix_order(cls, within_frame: Frame) -> None:
-        chunks = list(cls.objects.filter(frame=within_frame))
-        for i, chunk in enumerate(chunks, start=1):
-            chunk.order = i
-        cls.objects.bulk_update(chunks, ['order'])
-
-    @classmethod
     def last_order(cls, within_frame: Frame) -> int:
         try:
-            return cls.objects.filter(frame=within_frame).last().order
+            return cls.objects.aggregate(models.Max('order'))['order__max']
         except AttributeError:
             return 0

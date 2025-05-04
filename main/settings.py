@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django_browser_reload',
     # THIRD PARTY
     'django_rq',
+    'adminsortable2',
     # CUSTOM
     'exercises.apps.ExercisesConfig',
     'access.apps.AccessConfig',
