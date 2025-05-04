@@ -102,7 +102,9 @@ class Exercise(models.Model):
             frames = context.frames.active()
         topics = Topic.filter_by_levels(primary_topic, secondary_topic)
         for frame in frames:
-            frame_chunks = frame.chunks.filter(exercise__topic__in=topics)
+            frame_chunks = frame.chunks.filter(exercise__topic__in=topics).order_by(
+                'exercise__topic', 'order'
+            )
             exercises_data = [
                 dict(slug=c.exercise.slug, topic=str(c.exercise.topic)) for c in frame_chunks
             ]
@@ -114,15 +116,11 @@ class Exercise(models.Model):
 class Topic(models.Model):
     primary = models.SlugField(max_length=128)
     secondary = models.SlugField(max_length=128)
-    order = models.FloatField(default=0)
+    order = models.PositiveIntegerField(default=0)
 
     class Meta:
         unique_together = ('primary', 'secondary')
         ordering = ('order',)
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.cached_order = self.order
 
     def __str__(self):
         return f'{self.primary}/{self.secondary}'
@@ -136,18 +134,3 @@ class Topic(models.Model):
         if not primary_topic and secondary_topic:
             return cls.objects.filter(secondary=secondary_topic)
         return cls.objects.all()
-
-    @classmethod
-    def fix_order(cls) -> None:
-        order = 1
-        for topic in cls.objects.all():
-            topic.order = order
-            topic.save()
-            order += 1
-
-    @classmethod
-    def last_order(cls) -> int:
-        try:
-            return cls.objects.last().order
-        except AttributeError:
-            return 0
