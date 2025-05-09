@@ -66,16 +66,14 @@ upload: clean
     rsync -avz --delete --exclude-from rsync_exclude.txt repository/ pypas.es:~/code/pypas-web/repository/
 
 # Deploy project to production
-# deploy:
-#     #!/usr/bin/env bash
-#     git pull
-#     uv sync --no-dev --group prod
-#     uv run ./manage.py migrate
-#     uv run ./manage.py collectstatic --no-input
-#     supervisorctl restart pypas-web
-#     supervisorctl restart pypas-rq
 deploy:
-    echo deploy
+    #!/usr/bin/env bash
+    git pull
+    uv sync --no-dev --group prod
+    uv run ./manage.py migrate
+    uv run ./manage.py collectstatic --no-input
+    supervisorctl restart pypas-web
+    supervisorctl restart pypas-rq
 
 # Build documentation (TEX) for single exercise
 build exercise:
