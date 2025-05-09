@@ -44,6 +44,14 @@ dbsh: database
 check:
     uv run ./manage.py check
 
+[macos]
+sync:
+    uv sync --no-group prod
+
+[linux]
+sync:
+    uv sync --no-dev --group prod
+
 # Clean all temporary files (including TEX)
 clean:
     #!/usr/bin/env bash
@@ -89,8 +97,8 @@ build-all:
         (cd $exercise/docs && pdflatex -shell-escape README.tex)
     done
 
-# Sync project from production: PRODUCTION ---> DEVELOPMENT
-sync: database
+# Pull database from production: PRODUCTION ---> DEVELOPMENT
+pull: database
     #!/usr/bin/env bash
     ssh -T andor << EOF
         cd ~/code/pypas-web
