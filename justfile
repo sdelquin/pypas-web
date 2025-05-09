@@ -77,7 +77,7 @@ upload: clean
 deploy:
     #!/usr/bin/env bash
     git pull
-    uv sync --no-dev --group prod
+    just sync
     uv run ./manage.py migrate
     uv run ./manage.py collectstatic --no-input
     supervisorctl restart pypas-web
