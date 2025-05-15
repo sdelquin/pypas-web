@@ -44,10 +44,12 @@ dbsh: database
 check:
     uv run ./manage.py check
 
+# Sync uv
 [macos]
 sync:
     uv sync --no-group prod
 
+# Sync uv
 [linux]
 sync:
     uv sync --no-dev --group prod
