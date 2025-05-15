@@ -17,4 +17,6 @@ jobs:
           host: pypas.es
           username: ${{ secrets.PRODUCTION_SSH_USERNAME }}
           key: ${{ secrets.PRODUCTION_SSH_KEY }}
-          script: cd ~/code/pypas-web && just deploy
+          script: |
+            export PATH=$PATH:~/.local/bin
+            cd ~/code/pypas-web && just deploy
