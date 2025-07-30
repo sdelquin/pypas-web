@@ -8,4 +8,5 @@ urlpatterns = [
     path('put/<slug:exercise_slug>/', views.put, name='put'),
     path('log/', views.log, name='log'),
     path('log/verbose/', views.log, dict(verbose=True), name='log-verbose'),
+    path('pull/<slug:item_slug>/', views.pull, name='pull'),
 ]

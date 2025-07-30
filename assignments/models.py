@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import shutil
+import tempfile
 import zipfile
 from pathlib import Path
 
@@ -56,6 +57,14 @@ class Assignment(models.Model):
             self._cfg = self.load_config()
         return self._cfg
 
+    @property
+    def zipname(self) -> str:
+        return f'{self.chunk.exercise.slug}.zip'
+
+    @property
+    def zippath(self) -> Path:
+        return self.folder / self.zipname
+
     def load_config(self) -> dict:
         with open(self.config_path) as f:
             return toml.load(f)
@@ -107,6 +116,12 @@ class Assignment(models.Model):
         with zipfile.ZipFile(file) as zip_ref:
             zip_ref.extractall(self.folder)
 
+    def copy(self, file) -> None:
+        self.folder.parent.mkdir(parents=True, exist_ok=True)
+        with open(self.zippath, 'wb') as dest:
+            for chunk in file.chunks():
+                dest.write(chunk)
+
     def test(self) -> None:
         self.passed = None
         self.save()
@@ -145,3 +160,19 @@ class Assignment(models.Model):
                 info['assignments'] = assignments
             logdata.append(info)
         return logdata
+
+    @classmethod
+    def zip_frame_assignments_for_user(cls, frame: Frame, user: User) -> Path:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tmp_path = Path(tmpdir)
+            for assignment in user.assignments.filter(chunk__frame=frame):
+                dst_folder = tmp_path / assignment.chunk.exercise.slug
+                with zipfile.ZipFile(assignment.zippath) as archive:
+                    archive.extractall(dst_folder)
+            output_zip = tempfile.NamedTemporaryFile(suffix='.zip', delete=False)
+            output_zip_path = Path(output_zip.name)
+            with zipfile.ZipFile(output_zip_path, 'w') as archive:
+                for file in tmp_path.rglob('*'):
+                    arcname = file.relative_to(tmp_path)
+                    archive.write(file, arcname)
+        return output_zip_path
