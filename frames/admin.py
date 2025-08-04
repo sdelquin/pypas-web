@@ -3,6 +3,7 @@ from django.contrib import admin
 
 from chunks.models import Chunk
 
+from .filters import FrameStatusFilter
 from .models import Bucket, Frame
 
 
@@ -16,7 +17,7 @@ class ChunkInline(SortableInlineAdminMixin, admin.TabularInline):
 @admin.register(Frame)
 class FrameAdmin(SortableAdminBase, admin.ModelAdmin):
     list_display = ['bucket', 'context', 'start', 'end', 'num_exercises', 'active']
-    list_filter = ['context', 'bucket']
+    list_filter = [FrameStatusFilter, 'context', 'bucket']
     inlines = [ChunkInline]
 
     @admin.display(boolean=True)

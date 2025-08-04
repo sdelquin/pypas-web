@@ -48,6 +48,16 @@ class Frame(models.Model):
     def exercises(self):
         return exercises.models.Exercise.objects.filter(pk__in=self.chunks.values('exercise'))
 
+    @classmethod
+    def get_frames_by_status(cls, is_active: bool = None):
+        if is_active is None:
+            return cls.objects.all()
+        pks = []
+        for frame in cls.objects.all():
+            if frame.is_active == is_active:
+                pks.append(frame.pk)
+        return cls.objects.filter(pk__in=pks)
+
 
 class Bucket(models.Model):
     name = models.CharField(max_length=256)

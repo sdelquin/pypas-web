@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 
+from django.conf.locale.es import formats as es_formats
 from prettyconf import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -120,13 +121,15 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es-es'
 
 TIME_ZONE = config('TIME_ZONE', default='Atlantic/Canary')
 
 USE_I18N = True
 
 USE_TZ = True
+
+es_formats.DATETIME_FORMAT = 'd/m/Y H:i:s'
 
 
 # Static files (CSS, JavaScript, Images)

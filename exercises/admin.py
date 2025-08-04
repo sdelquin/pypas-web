@@ -3,7 +3,13 @@ from django.contrib import admin
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 
+from chunks.models import Chunk
+
 from .models import Exercise, Topic
+
+
+class ChunkInline(admin.TabularInline):
+    model = Chunk
 
 
 @admin.action(description='Add selected exercises to frame')
@@ -19,6 +25,7 @@ class ExerciseAdmin(admin.ModelAdmin):
     search_fields = ['slug']
     list_filter = ['topic__primary', 'topic__secondary']
     actions = [add_exercises_to_frame]
+    inlines = [ChunkInline]
 
 
 @admin.register(Topic)
