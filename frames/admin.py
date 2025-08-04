@@ -27,5 +27,6 @@ class FrameAdmin(SortableAdminBase, admin.ModelAdmin):
 
 @admin.register(Bucket)
 class BucketAdmin(admin.ModelAdmin):
-    list_display = ['name', 'slug']
+    list_display = ['name', 'slug', 'description']
+    search_fields = ['name', 'slug', 'description']
     prepopulated_fields = {'slug': ('name',)}

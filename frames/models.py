@@ -62,6 +62,7 @@ class Frame(models.Model):
 class Bucket(models.Model):
     name = models.CharField(max_length=256)
     slug = models.SlugField(max_length=256, unique=True)
+    description = models.CharField(max_length=512, blank=True)
 
     class Meta:
         ordering = ['name']
