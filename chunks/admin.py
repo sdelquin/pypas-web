@@ -15,10 +15,18 @@ def add_chunks_to_frame(modeladmin, request, queryset):
 
 @admin.register(Chunk)
 class ChunkAdmin(SortableAdminMixin, admin.ModelAdmin):
-    list_display = ['exercise', 'frame', 'exercise_topic', 'puttable', 'hits', 'order']
+    list_display = [
+        'exercise',
+        'frame',
+        'exercise_topic',
+        'puttable',
+        'hits',
+        'pass_to_put',
+        'order',
+    ]
     autocomplete_fields = ['exercise']
     search_fields = ['exercise__slug']
-    list_filter = ['frame', 'exercise__topic', 'puttable']
+    list_filter = ['frame', 'exercise__topic', 'puttable', 'pass_to_put']
     actions = [add_chunks_to_frame]
 
     @admin.display(description='Topic')

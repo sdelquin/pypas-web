@@ -48,7 +48,12 @@ def put(request, exercise_slug: str):
     assignment.copy(uploaded_file)
     assignment.test()
 
-    return JsonResponse(dict(success=True, payload=chunk.frame.bucket.name))
+    if assignment.chunk.pass_to_put:
+        payload = f'Chunk {chunk.display} must pass the tests to be puttable. In case of failure, the assignment will be removed.'
+    else:
+        payload = f'Saved at frame: {chunk.frame}'
+
+    return JsonResponse(dict(success=True, payload=payload))
 
 
 @auth_required

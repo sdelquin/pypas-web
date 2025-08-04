@@ -10,6 +10,9 @@ class Chunk(models.Model):
         'exercises.Exercise', on_delete=models.PROTECT, related_name='chunks'
     )
     puttable = models.BooleanField(default=True)
+    pass_to_put = models.BooleanField(
+        default=False, help_text='If True, the exercise must pass the tests to be puttable.'
+    )
     order = models.PositiveIntegerField(default=0)
     hits = models.PositiveBigIntegerField(default=0)
 
@@ -19,6 +22,10 @@ class Chunk(models.Model):
 
     def __str__(self):
         return f'{self.frame} - {self.exercise}'
+
+    @property
+    def display(self):
+        return f'{self.exercise}@{self.frame.bucket.slug}'
 
     def validate_unique(self, exclude=None) -> None:
         super().validate_unique(exclude=exclude)

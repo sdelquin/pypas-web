@@ -13,3 +13,6 @@ def test_assignment(assignment):
     assignment.passed = ret.returncode == pytest.ExitCode.OK
     assignment.save()
     assignment.dump_test()
+    if not assignment.passed and assignment.chunk.pass_to_put:
+        assignment.remove_folder()
+        assignment.delete()
