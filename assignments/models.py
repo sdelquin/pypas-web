@@ -127,6 +127,16 @@ class Assignment(models.Model):
         self.save()
         django_rq.enqueue(jobs.test_assignment, self)
 
+    def dump_test(self) -> None:
+        passed = Path(self.folder / settings.PASSED_PLACEHOLDER_FILENAME)
+        failed = Path(self.folder / settings.FAILED_PLACEHOLDER_FILENAME)
+        if self.passed:
+            failed.unlink(missing_ok=True)
+            passed.touch()
+        else:
+            passed.unlink(missing_ok=True)
+            failed.touch()
+
     def __str__(self):
         return f'{self.user} at {self.chunk.exercise}'
 

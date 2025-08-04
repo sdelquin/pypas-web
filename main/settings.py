@@ -203,3 +203,6 @@ if not DEBUG:
     }
 
 PYPAS_CLI_PYPI_URL = config('PYPAS_CLI_PYPI_URL', default='https://pypi.org/project/pypas-cli/')
+
+PASSED_PLACEHOLDER_FILENAME = config('PASSED_PLACEHOLDER_FILENAME', default='PASSED')
+FAILED_PLACEHOLDER_FILENAME = config('FAILED_PLACEHOLDER_FILENAME', default='FAILED')

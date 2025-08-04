@@ -12,3 +12,4 @@ def test_assignment(assignment):
     ret = subprocess.run(shlex.split(cmd))
     assignment.passed = ret.returncode == pytest.ExitCode.OK
     assignment.save()
+    assignment.dump_test()
