@@ -57,8 +57,8 @@ class Exercise(models.Model):
         return self.folder / self.zipname
 
     @property
-    def folder_last_modification(self) -> float:
-        return self.folder.stat().st_mtime
+    def exercise_last_modification(self) -> float:
+        return max(self.build_full_path(f).stat().st_mtime for f in self.bundle)
 
     @property
     def zip_last_modification(self) -> float:
@@ -68,7 +68,10 @@ class Exercise(models.Model):
         return self.folder / relative_path
 
     def zip(self) -> None:
-        if not self.zippath.exists() or self.folder_last_modification > self.zip_last_modification:
+        if (
+            not self.zippath.exists()
+            or self.exercise_last_modification > self.zip_last_modification
+        ):
             with zipfile.ZipFile(self.zippath, 'w') as archive:
                 for f in self.bundle:
                     archive.write(self.build_full_path(f), f)
