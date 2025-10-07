@@ -1,20 +1,20 @@
+# Global settings
+# Use uv (https://github.com/ultrabear/uv)
+server := "matraka"
+
 # Launch Django development server
 runserver: database
     uv run ./manage.py runserver
 
+alias mm := makemigrations
 # Make migrations for single app or whole project
 makemigrations app="": database
     uv run ./manage.py makemigrations {{ app }}
 
+alias m := migrate
 # Commit migrations for single app or whole project
 migrate app="": database
     uv run ./manage.py migrate {{ app }}
-
-alias mm := mmigrate
-
-# Make migrations & Commit migrations (all in one)
-mmigrate app="": database
-    uv run ./manage.py makemigrations {{ app }} && uv run ./manage.py migrate {{ app }}
 
 # Show migrations for single app or whole project
 showmigrations app="": database
@@ -102,23 +102,19 @@ build-all:
 # Pull database from production: PRODUCTION ---> DEVELOPMENT
 pull: database
     #!/usr/bin/env bash
-    ssh -T andor << EOF
+    ssh -T {{ server }} << EOF
         cd ~/code/pypas-web
         uv run ./manage.py backup -b ~/tmp/pypas-web/
     EOF
-    scp andor:~/tmp/pypas-web/`date +%Y-%m-%d`/db.sql /tmp/pypas.sql
-    ssh andor rm -rf ~/tmp/pypas-web/
+    scp {{ server }}:~/tmp/pypas-web/`date +%Y-%m-%d`/db.sql /tmp/pypas.sql
+    ssh {{ server }} rm -rf ~/tmp/pypas-web/
     psql pypas < /tmp/pypas.sql
     rm /tmp/pypas.sql
     uv run ./manage.py reset_admin
 
 # Get a single exercise from production to development (inside repository)
 get exercise:
-    scp -r andor:~/code/pypas-web/repository/{{ exercise }} repository/
-
-# Grab version of installed Python package
-@req package:
-    pip freeze | grep -i {{ package }}
+    scp -r {{ server }}:~/code/pypas-web/repository/{{ exercise }} repository/
 
 # Build docker image for testing (pytest)
 build-pytest:
