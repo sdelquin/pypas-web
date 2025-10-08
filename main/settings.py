@@ -209,3 +209,6 @@ PYPAS_CLI_PYPI_URL = config('PYPAS_CLI_PYPI_URL', default='https://pypi.org/proj
 
 PASSED_PLACEHOLDER_FILENAME = config('PASSED_PLACEHOLDER_FILENAME', default='PASSED')
 FAILED_PLACEHOLDER_FILENAME = config('FAILED_PLACEHOLDER_FILENAME', default='FAILED')
+
+# django-admin-sortable2 makes large post requests and we need to increase the default limit
+DATA_UPLOAD_MAX_NUMBER_FIELDS = config('DATA_UPLOAD_MAX_NUMBER_FIELDS', default=1000, cast=int)
