@@ -32,7 +32,7 @@ class Chunk(models.Model):
         if (
             getattr(self, 'frame', False)
             and self.__class__.objects.filter(
-                frame__context=self.frame.context, exercise=self.exercise
+                frame__context=self.frame.context, exercise__pk=self.exercise.pk
             )
             .exclude(pk=self.pk)
             .exists()
