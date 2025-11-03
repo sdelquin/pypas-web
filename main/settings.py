@@ -24,7 +24,7 @@ PROJECT_NAME = BASE_DIR.stem
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-l=hbedf2%q_nh01yyco#=#i(p2t%(=^s0)u-t9@&f1ch0onyg7'
+SECRET_KEY = config('SECRET_KEY', default='django-is-awesome')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=True, cast=config.boolean)
