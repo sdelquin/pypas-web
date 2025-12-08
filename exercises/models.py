@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-import glob
 import shutil
 import zipfile
 from pathlib import Path
 from typing import Iterator
 
+import pathspec
 import toml
 from django.conf import settings
 from django.db import models
@@ -43,10 +43,9 @@ class Exercise(models.Model):
 
     @property
     def bundle(self) -> Iterator[str]:
-        for b in self.config['bundle'] + [settings.EXERCISE_CONFIG_FILE]:
-            globs = glob.glob(b, root_dir=self.folder)
-            for g in globs:
-                yield g
+        spec = pathspec.PathSpec.from_lines('gitwildmatch', self.config['bundle'])
+        yield from spec.match_tree(self.folder)
+        yield settings.EXERCISE_CONFIG_FILE
 
     @property
     def zipname(self) -> str:

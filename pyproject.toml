@@ -6,6 +6,7 @@ dependencies = [
     "django>=5.2.1",
     "django-admin-sortable2>=2.2.6",
     "django-rq>=3.0.1",
+    "pathspec>=0.12.1",
     "prettyconf>=2.3.0",
     "psycopg2-binary>=2.9.10",
     "requests>=2.32.3",
