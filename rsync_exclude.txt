@@ -17,3 +17,4 @@ svg-inkscape
 node_modules
 .artwork
 cache
+*.zip

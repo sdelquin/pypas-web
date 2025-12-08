@@ -63,6 +63,7 @@ clean:
     find repository/ -name '*.fls' -exec rm -f {} \;
     find repository/ -name '*.log' -exec rm -f {} \;
     find repository/ -name '*.out' -exec rm -f {} \;
+    find repository/ -name '*.zip' -exec rm -f {} \;
     find repository/ -name '*.synctex.gz' -exec rm -f {} \;
     find repository/ -name '*.DS_Store' -exec rm -f {} \;
     find repository/ -name '_minted-*' -prune -exec rm -rf {} \;
