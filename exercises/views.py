@@ -76,3 +76,19 @@ def add_exercises_to_frame(request):
         'exercises/admin/add_exercises_to_frame.html',
         dict(form=form, title='Add exercises to frame'),
     )
+
+
+@csrf_exempt
+def info(request, slug: str):  # noqa
+    try:
+        exercise = Exercise.objects.get(slug=slug)
+    except Exercise.DoesNotExist:
+        return JsonResponse(dict(success=False, payload=f'Exercise "{slug}" does not exist'))
+
+    payload = dict(
+        slug=exercise.slug,
+        primary_topic=exercise.topic.primary,
+        secondary_topic=exercise.topic.secondary,
+        version=exercise.version,
+    )
+    return JsonResponse(dict(success=True, payload=payload))

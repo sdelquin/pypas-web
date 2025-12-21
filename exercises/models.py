@@ -3,7 +3,7 @@ from __future__ import annotations
 import shutil
 import zipfile
 from pathlib import Path
-from typing import Iterator
+from typing import Iterator, List
 
 import pathspec
 import toml
@@ -22,7 +22,7 @@ class Exercise(models.Model):
     )
 
     # MANAGERS
-    objects = ExerciseQuerySet.as_manager()
+    objects = ExerciseQuerySet.as_manager()  # type: ignore
 
     class Meta:
         ordering = ['topic', 'slug']
@@ -96,7 +96,7 @@ class Exercise(models.Model):
         shutil.rmtree(self.folder, ignore_errors=True)
 
     @classmethod
-    def list(cls, context, frame_ref: str, primary_topic: str, secondary_topic: str) -> list[dict]:
+    def list(cls, context, frame_ref: str, primary_topic: str, secondary_topic: str) -> List[dict]:
         listdata = []
         if frame_ref:
             frames = Frame.objects.filter(context=context).byref(frame_ref).active()
@@ -113,6 +113,10 @@ class Exercise(models.Model):
             info = dict(name=str(frame), slug=frame.bucket.slug, exercises=exercises_data)
             listdata.append(info)
         return listdata
+
+    @property
+    def version(self) -> str:
+        return str(self.config.get('version', settings.DEFAULT_EXERCISE_VERSION))
 
 
 class Topic(models.Model):

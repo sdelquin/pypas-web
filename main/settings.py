@@ -129,7 +129,7 @@ USE_I18N = True
 
 USE_TZ = True
 
-es_formats.DATETIME_FORMAT = 'd/m/Y H:i:s'
+es_formats.DATETIME_FORMAT = 'd/m/Y H:i:s'  # type: ignore
 
 
 # Static files (CSS, JavaScript, Images)
@@ -212,3 +212,5 @@ FAILED_PLACEHOLDER_FILENAME = config('FAILED_PLACEHOLDER_FILENAME', default='FAI
 
 # django-admin-sortable2 makes large post requests and we need to increase the default limit
 DATA_UPLOAD_MAX_NUMBER_FIELDS = config('DATA_UPLOAD_MAX_NUMBER_FIELDS', default=1000, cast=int)
+
+DEFAULT_EXERCISE_VERSION = config('DEFAULT_EXERCISE_VERSION', default='0.1.0')
