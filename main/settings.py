@@ -214,3 +214,7 @@ FAILED_PLACEHOLDER_FILENAME = config('FAILED_PLACEHOLDER_FILENAME', default='FAI
 DATA_UPLOAD_MAX_NUMBER_FIELDS = config('DATA_UPLOAD_MAX_NUMBER_FIELDS', default=1000, cast=int)
 
 DEFAULT_EXERCISE_VERSION = config('DEFAULT_EXERCISE_VERSION', default='0.1.0')
+
+PYPAS_DOCS_URL = config(
+    'PYPAS_DOCS_URL', default='https://aprendepython.es/third-party/learning/pypas/'
+)

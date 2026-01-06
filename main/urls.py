@@ -5,7 +5,8 @@ from django.shortcuts import redirect
 from django.urls import include, path
 
 urlpatterns = [
-    path('', lambda _: redirect('/docs/')),  # mkdocs site
+    path('', lambda _: redirect(settings.PYPAS_DOCS_URL)),
+    path('docs/', lambda _: redirect(settings.PYPAS_DOCS_URL)),
     path('__reload__/', include('django_browser_reload.urls')),
     path('django-rq/', include('django_rq.urls')),
     path('admin/', include('exercises.urls_admin')),
