@@ -51,3 +51,11 @@ class Chunk(models.Model):
             return cls.objects.aggregate(models.Max('order'))['order__max']
         except AttributeError:
             return 0
+
+    @classmethod
+    def filter_by_frame_slug(cls, frame_ref: str):
+        context_slug, bucket_slug = frame_ref.split('/', 1)
+        return cls.objects.filter(
+            frame__context__slug=context_slug,
+            frame__bucket__slug=bucket_slug,
+        )
