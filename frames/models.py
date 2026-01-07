@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
 
@@ -57,6 +58,11 @@ class Frame(models.Model):
             if frame.is_active == is_active:
                 pks.append(frame.pk)
         return cls.objects.filter(pk__in=pks)
+
+    def clean(self):
+        if self.start and self.end:
+            if self.start >= self.end:  # type: ignore
+                raise ValidationError('Frame start time must be before end time.')
 
 
 class Bucket(models.Model):
