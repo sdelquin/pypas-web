@@ -6,4 +6,5 @@ app_name = 'access'
 
 urlpatterns = [
     path('auth/<slug:token>/', views.authenticate_user, name='authenticate-user'),
+    path('info/<slug:token>/', views.auth_info, name='auth-info'),
 ]
