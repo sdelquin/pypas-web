@@ -55,7 +55,7 @@ sync:
     uv sync --no-dev --group prod
 
 # Clean all temporary files (including TEX)
-clean exercise="":
+clean exercise=".":
     #!/usr/bin/env bash
     find repository/{{exercise}} -name '*.pyc' -exec rm -f {} \;
     find repository/{{exercise}} -name '*.aux' -exec rm -f {} \;
@@ -73,9 +73,9 @@ clean exercise="":
     find repository/{{exercise}} -name 'svg-inkscape' -prune -exec rm -rf {} \;
 
 # Upload exercises to production
-upload exercise="":
+upload exercise=".":
     just clean {{exercise}}
-    rsync -avz --delete --exclude-from rsync_exclude.txt repository/{{exercise}} pypas.es:~/code/pypas-web/repository/{{exercise}}
+    rsync -avz --delete --exclude-from rsync_exclude.txt repository/{{exercise}}/ pypas.es:~/code/pypas-web/repository/{{exercise}}/
 
 # Deploy project to production
 deploy:
