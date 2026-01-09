@@ -55,26 +55,27 @@ sync:
     uv sync --no-dev --group prod
 
 # Clean all temporary files (including TEX)
-clean:
+clean exercise="":
     #!/usr/bin/env bash
-    find repository/ -name '*.pyc' -exec rm -f {} \;
-    find repository/ -name '*.aux' -exec rm -f {} \;
-    find repository/ -name '*.fdb_latexmk' -exec rm -f {} \;
-    find repository/ -name '*.fls' -exec rm -f {} \;
-    find repository/ -name '*.log' -exec rm -f {} \;
-    find repository/ -name '*.out' -exec rm -f {} \;
-    find repository/ -name '*.zip' -exec rm -f {} \;
-    find repository/ -name '*.synctex.gz' -exec rm -f {} \;
-    find repository/ -name '*.DS_Store' -exec rm -f {} \;
-    find repository/ -name '_minted-*' -prune -exec rm -rf {} \;
-    find repository/ -name '__pycache__' -prune -exec rm -rf {} \;
-    find repository/ -name '.pytest_cache' -prune -exec rm -rf {} \;
-    find repository/ -name '.mypy_cache' -prune -exec rm -rf {} \;
-    find repository/ -name 'svg-inkscape' -prune -exec rm -rf {} \;
+    find repository/{{exercise}} -name '*.pyc' -exec rm -f {} \;
+    find repository/{{exercise}} -name '*.aux' -exec rm -f {} \;
+    find repository/{{exercise}} -name '*.fdb_latexmk' -exec rm -f {} \;
+    find repository/{{exercise}} -name '*.fls' -exec rm -f {} \;
+    find repository/{{exercise}} -name '*.log' -exec rm -f {} \;
+    find repository/{{exercise}} -name '*.out' -exec rm -f {} \;
+    find repository/{{exercise}} -name '*.zip' -exec rm -f {} \;
+    find repository/{{exercise}} -name '*.synctex.gz' -exec rm -f {} \;
+    find repository/{{exercise}} -name '*.DS_Store' -exec rm -f {} \;
+    find repository/{{exercise}} -name '_minted-*' -prune -exec rm -rf {} \;
+    find repository/{{exercise}} -name '__pycache__' -prune -exec rm -rf {} \;
+    find repository/{{exercise}} -name '.pytest_cache' -prune -exec rm -rf {} \;
+    find repository/{{exercise}} -name '.mypy_cache' -prune -exec rm -rf {} \;
+    find repository/{{exercise}} -name 'svg-inkscape' -prune -exec rm -rf {} \;
 
 # Upload exercises to production
-upload: clean
-    rsync -avz --delete --exclude-from rsync_exclude.txt repository/ pypas.es:~/code/pypas-web/repository/
+upload exercise="":
+    just clean {{exercise}}
+    rsync -avz --delete --exclude-from rsync_exclude.txt repository/{{exercise}} pypas.es:~/code/pypas-web/repository/{{exercise}}
 
 # Deploy project to production
 deploy:
