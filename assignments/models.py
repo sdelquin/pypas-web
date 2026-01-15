@@ -17,8 +17,8 @@ from . import jobs
 
 
 class Assignment(models.Model):
-    user = models.ForeignKey('access.User', on_delete=models.PROTECT, related_name='assignments')
-    chunk = models.ForeignKey('chunks.Chunk', on_delete=models.PROTECT, related_name='assignments')
+    user = models.ForeignKey('access.User', on_delete=models.CASCADE, related_name='assignments')
+    chunk = models.ForeignKey('chunks.Chunk', on_delete=models.CASCADE, related_name='assignments')
     passed = models.BooleanField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
