@@ -12,4 +12,5 @@
 /node_modules
 /backup
 /logs
+/exercises/management/commands/helpers/manage_pypas_toml.py
 TODO
