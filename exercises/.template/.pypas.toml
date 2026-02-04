@@ -2,7 +2,7 @@ version = "0.1.0"
 slug = "exercise"
 bundle = ["/docs/README.pdf", "/tests", "/main.py", "/vendor.py"]
 backup_on_update = ["/main.py"]
-exclude_from_zip = ["*.pyc", ".DS_Store", "/.git", "*.bak", "*cache*"]
+exclude_from_zip = ["*.pyc", ".DS_Store", "/.git", "*.bak", "*cache*", "/args.py"]
 
 [release_notes]
 "0.1.0" = "Primera versión"
