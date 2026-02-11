@@ -5,7 +5,7 @@ import pytest
 if os.path.exists('solution.py'):
     import solution as main
 else:
-    import main  # type:ignore
+    import main
 
 testdata = [
     (1, 1),
