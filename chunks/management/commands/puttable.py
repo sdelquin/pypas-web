@@ -58,12 +58,13 @@ class Command(BaseCommand):
         if not chunks.exists():
             print(self.style.WARNING('No chunks found with the specified criteria.'))
             return
+        display_symbol = '✔' if make_puttable else '✗'
         print(
-            f'Following chunks ({chunks.count()}) will be updated with [puttable={make_puttable}]'
+            f'Following chunks ({chunks.count()}) will be updated with [puttable={make_puttable}] {display_symbol}'
         )
         print('=' * 80)
         for chunk in chunks:
-            print(f'* {chunk}')
+            print(f'{display_symbol} {chunk}')
         print('=' * 80)
         if not options['force']:
             confirm = input('Are you sure you want to proceed? (y/n): ')
