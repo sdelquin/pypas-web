@@ -216,5 +216,5 @@ DATA_UPLOAD_MAX_NUMBER_FIELDS = config('DATA_UPLOAD_MAX_NUMBER_FIELDS', default=
 DEFAULT_EXERCISE_VERSION = config('DEFAULT_EXERCISE_VERSION', default='0.1.0')
 
 PYPAS_DOCS_URL = config(
-    'PYPAS_DOCS_URL', default='https://aprendepython.es/third-party/learning/pypas/'
+    'PYPAS_DOCS_URL', default='https://aprendepython.es/paquetes/aprendizaje/pypas/'
 )
